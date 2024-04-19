@@ -1,0 +1,3 @@
+[submodule "2022Fall"]
+	path = 2022Fall
+	url = git@github.com:Classual/2022Fall.git
