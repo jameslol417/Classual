@@ -1,0 +1,5 @@
+# GPEC
+
+| Course | Overall | Section |
+| ------ | ------- | ------- |
+| GPEC 243 | [csv](https://github.com/UCSD-Historical-Enrollment-Data/2023Fall/blob/main/overall/GPEC%20243.csv), [png](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_overall/GPEC%20243.png), [wide](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_overall_wide/GPEC%20243.png) | Section A: [csv](https://github.com/UCSD-Historical-Enrollment-Data/2023Fall/blob/main/section/GPEC%20243_A.csv), [png](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section/GPEC%20243_A.png), [wide](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section_wide/GPEC%20243_A.png)<br>Section B: [csv](https://github.com/UCSD-Historical-Enrollment-Data/2023Fall/blob/main/section/GPEC%20243_B.csv), [png](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section/GPEC%20243_B.png), [wide](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section_wide/GPEC%20243_B.png) |
