@@ -1,5 +1,0 @@
-# TDHD
-
-| Course | Overall | Section |
-| ------ | ------- | ------- |
-| TDHD 21 | [csv](https://github.com/UCSD-Historical-Enrollment-Data/2023Fall/blob/main/overall/TDHD%2021.csv), [png](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_overall/TDHD%2021.png), [wide](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_overall_wide/TDHD%2021.png) | Section A: [csv](https://github.com/UCSD-Historical-Enrollment-Data/2023Fall/blob/main/section/TDHD%2021_A.csv), [png](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section/TDHD%2021_A.png), [wide](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section_wide/TDHD%2021_A.png)<br>Section B: [csv](https://github.com/UCSD-Historical-Enrollment-Data/2023Fall/blob/main/section/TDHD%2021_B.csv), [png](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section/TDHD%2021_B.png), [wide](https://raw.githubusercontent.com/UCSD-Historical-Enrollment-Data/2023Fall/main/plot_section_wide/TDHD%2021_B.png) |
