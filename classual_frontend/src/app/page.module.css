@@ -1,0 +1,82 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 3rem;
+}
+
+.topContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.titleTxt {
+  font-size: 4rem;
+  font-weight: 'bolder';
+  text-align: center;
+}
+
+.searchContainer {
+  border: 2px solid black;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 80%;
+  height: 4rem;
+  padding: 1rem;
+  margin: 3rem 0rem;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  width: 80%;
+  font-size: 2rem;
+  padding: 1rem;
+}
+
+.searchButton {
+  width: 4rem;
+  height: auto;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.coursesMajorContainer {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottomIndicatorText {
+  font-size: 2rem;
+  font-weight: bolder;
+  margin: 1rem;
+}
+
+.majorAndClassContainer {
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.majorText {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.classText {
+  font-size: 1rem;
+  margin: 1rem;
+  cursor: pointer;
+}
