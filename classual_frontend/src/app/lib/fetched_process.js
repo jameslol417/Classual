@@ -1,13 +1,12 @@
 
+async function fetchCsv() {
+    const response = await fetch('/AAS 10.csv');
+    const reader = response.body.getReader();
+    const result = await reader.read();
+    const decoder = new TextDecoder('utf-8');
+    const csv = await decoder.decode(result.value);
+    console.log('csv', csv);
+    return csv;
+}
 
-async function fetchExampleCSV() {
-    try {
-        const res = await fetch('../../../example_data/AAS 10.csv');
-        const data = await res.text();
-        console.log(data);
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export default fetchExampleCSV;
+export default fetchCsv;

@@ -1,13 +1,21 @@
 'use client'
 
 import { useEffect } from 'react';
-import fetchExampleCSV from '../lib/fetched_process';
+// import fetchExampleCSV from '../lib/fetched_process';
+import fetchCsv from '../lib/fetched_process';
+import Papa from 'papaparse';
+
+async function GetData(artist) {
+    const data = Papa.parse(await fetchCsv());
+    console.log(data);
+    return data;
+}
 
 
 function DetailedCourse() {
 
     useEffect(() => {
-        fetchExampleCSV();
+        GetData();
     }, [])
 
     return (
