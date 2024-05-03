@@ -37,6 +37,8 @@ function DetailedCourse() {
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="enrolledNumber" stroke="#8884d8" />
+                <Line type="monotone" dataKey="waitlistNumber" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="totalSeatNumber" stroke="#82ca9d" />
             </LineChart>
         </div>
     )
