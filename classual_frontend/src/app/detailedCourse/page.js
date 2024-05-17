@@ -3,7 +3,8 @@
 import { useEffect, useState, useReducer } from 'react';
 // import fetchExampleCSV from '../lib/fetched_process';
 import fetchCsv from '../lib/fetched_process';
-import {treeReducer} from '../components/graphing/treeReducer'
+import treeReducer from '../components/graphing/treeReducer';
+import makeGraph from '../components/graphing/CourseTree';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
@@ -13,7 +14,19 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 function DetailedCourse() {
     const [data, setData] = useState([]);
     const [state, dispatch] = useReducer(treeReducer, null);
-    const json = require('./courses.json');
+    const [course, setCourse] = useState([]);
+
+    useEffect(() => {
+        fetch('/courses/CSE_12.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => setCourses(data))
+            .catch(error => console.error('Error fetching courses:', error));
+    }, []);
 
     useEffect(() => {
         fetchData();
@@ -33,12 +46,12 @@ function DetailedCourse() {
     useEffect(() => {
         // initialize the graph
         async function loadGraph() {
-          const rootNode = await makeGraph(root);
-        // call treeReducer
-        //   dispatch({ type: "initialize", payload: rootNode });
+            const rootNode = await makeGraph(course);
+            // call treeReducer
+            //   dispatch({ type: "initialize", payload: rootNode });
         }
         loadGraph();
-      }, [root]);
+    }, [course]);
 
     return (
         <div>
