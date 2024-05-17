@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useReducer } from 'react';
 // import fetchExampleCSV from '../lib/fetched_process';
 import fetchCsv from '../lib/fetched_process';
+import {treeReducer} from '../components/graphing/treeReducer'
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
@@ -11,6 +12,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 
 function DetailedCourse() {
     const [data, setData] = useState([]);
+    const [state, dispatch] = useReducer(treeReducer, null);
+    const json = require('./courses.json');
 
     useEffect(() => {
         fetchData();
@@ -26,6 +29,16 @@ function DetailedCourse() {
             console.error("Failed to fetch and parse CSV data:", error);
         }
     }
+
+    useEffect(() => {
+        // initialize the graph
+        async function loadGraph() {
+          const rootNode = await makeGraph(root);
+        // call treeReducer
+        //   dispatch({ type: "initialize", payload: rootNode });
+        }
+        loadGraph();
+      }, [root]);
 
     return (
         <div>
