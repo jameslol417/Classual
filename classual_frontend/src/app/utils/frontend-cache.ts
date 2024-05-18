@@ -30,7 +30,7 @@ function loadCourse(code: string) {
 
 async function fetchFromStaticFiles(code: string) {
   try {
-    const response = await fetch(`/data/${slugifyCourseCode(code)}.json`);
+    const response = await fetch(`/courses/${slugifyCourseCode(code)}.json`);
     if (!response.ok) {
       // some 404s are expected because the data are not perfectly consistent
       return null;

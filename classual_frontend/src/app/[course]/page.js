@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import DetailedCourse from '../components/DetailedCourse';
+import TestComponent from '../components/Test';
 
 export default function CoursePage() {
     const { course } = useParams();
@@ -18,5 +19,11 @@ export default function CoursePage() {
         return <div>Loading...</div>;
     }
 
-    return <DetailedCourse course={currentCourse} />;
+    return (
+        <div>
+            <DetailedCourse course={currentCourse} />
+            <TestComponent />
+        </div>
+    
+        );
 }

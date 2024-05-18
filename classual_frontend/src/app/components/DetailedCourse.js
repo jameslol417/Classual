@@ -7,6 +7,7 @@ import * as cache from '../utils/frontend-cache';
 import TestComponent from './Test';
 
 import GraphViewer from "./GraphViewer";
+import { IndependentGraphViewer } from "../components/GraphViewer";
 
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
@@ -20,16 +21,16 @@ function DetailedCourse({ course }) {
     const legendRef = useRef();
     const tooltipRef = useRef();
 
-    useEffect(() => {
-        // initialize the graph
-        async function loadGraph() {
-            const nodeCourse = await cache.getCourse(decodeURIComponent(course));
-            const rootNode = await makeGraph(nodeCourse);
-            // call treeReducer
-            dispatch({ type: "initialize", payload: rootNode });
-        }
-        loadGraph();
-    }, [course]);
+    // useEffect(() => {
+    //     // initialize the graph
+    //     async function loadGraph() {
+    //         const nodeCourse = await cache.getCourse(decodeURIComponent(course));
+    //         const rootNode = await makeGraph(nodeCourse);
+    //         // call treeReducer
+    //         dispatch({ type: "initialize", payload: rootNode });
+    //     }
+    //     loadGraph();
+    // }, [course]);
 
     useEffect(() => {
         if (course) {
@@ -267,7 +268,9 @@ function DetailedCourse({ course }) {
             <svg ref={svgRef} width={700} height={400}></svg>
             <svg ref={legendRef} className="legend"></svg>
             <div ref={tooltipRef} className="tooltip"></div>
-            <div><GraphViewer root={cache.getCourse(decodeURIComponent(course))} /></div>
+            <div style={{ backgroundColor: 'black' }}>
+                <IndependentGraphViewer courseCode={decodeURIComponent(course)} />
+            </div>
         </div>
     );
 }

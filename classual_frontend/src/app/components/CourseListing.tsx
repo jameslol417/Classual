@@ -13,9 +13,10 @@ function CourseListing({ course }: CourseListingProps) {
   return (
     <div id={slugifyCourseCode(course.code)}>
       <Link href={`/courses/${slugifyCourseCode(course.code)}`}>
-        <a>
+        {/* <a>
           <h3>{`${course.code}. ${course.title} (${course.units} units)`}</h3>
-        </a>
+        </a> */}
+        <h3>{`${course.code}. ${course.title} (${course.units} units)`}</h3>
       </Link>
       {course.successors && (
         <p>
