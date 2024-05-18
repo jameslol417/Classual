@@ -1,9 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react';
+import * as cache from './cache';
 
 async function makeGraph(course) {
   const root = await convertCourseToGraphNode(course.code, true, 0);
+  console.log("call make graph " + course.code);
   if (root.state === "closed") {
     root.state = "open";
   }
