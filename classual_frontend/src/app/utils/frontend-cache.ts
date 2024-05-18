@@ -1,12 +1,13 @@
-import { slugifyCourseCode } from "./course";
+import { Course } from "./data-schema";
+import { slugifyCourseCode } from ".";
 
-const courseCache = new Map();
+const courseCache = new Map<string, Promise<Course | null> | Course | null>();
 
-export async function getCourse(code) {
+export async function getCourse(code: string) {
   if (!courseCache.has(code)) {
     loadCourse(code);
   }
-  return courseCache.get(code);
+  return courseCache.get(code) as Promise<Course | null> | Course | null;
 }
 
 /**
@@ -17,7 +18,7 @@ export async function getCourse(code) {
  * request for a course when other requests are already pending for the same
  * course.
  */
-function loadCourse(code) {
+function loadCourse(code: string) {
   courseCache.set(
     code,
     fetchFromStaticFiles(code).then((result) => {
@@ -27,15 +28,15 @@ function loadCourse(code) {
   );
 }
 
-async function fetchFromStaticFiles(code) {
+async function fetchFromStaticFiles(code: string) {
   try {
-    const response = await fetch(`/courses/${slugifyCourseCode(code)}.json`);
+    const response = await fetch(`/data/${slugifyCourseCode(code)}.json`);
     if (!response.ok) {
       // some 404s are expected because the data are not perfectly consistent
       return null;
     }
     const json = await response.json();
-    return json;
+    return json as Course;
   } catch {
     return null;
   }

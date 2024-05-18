@@ -1,0 +1,23 @@
+.searchForm {
+  margin: 2rem auto;
+  width: 50%;
+  min-width: 16rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.searchLabel {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.searchBar {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  border: 1px solid var(--cool-gray);
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  color: var(--text-primary);
+}

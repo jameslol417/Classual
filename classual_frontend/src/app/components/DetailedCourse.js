@@ -3,9 +3,10 @@
 import React, { useState, useRef, useEffect, useReducer } from 'react';
 import * as d3 from 'd3';
 import parseCSV from '../lib/processCSV';
-import treeReducer from '../components/graphing/treeReducer';
-import makeGraph from '../components/graphing/CourseTree';
-import * as cache from '../components/graphing/cache';
+import * as cache from '../utils/frontend-cache';
+import TestComponent from './Test';
+
+import GraphViewer from "./GraphViewer";
 
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
@@ -18,9 +19,6 @@ function DetailedCourse({ course }) {
     const svgRef = useRef();
     const legendRef = useRef();
     const tooltipRef = useRef();
-
-    const [state, dispatch] = useReducer(treeReducer, null);
-    const [nodeCourse, setCourse] = useState([]);
 
     useEffect(() => {
         // initialize the graph
@@ -239,6 +237,7 @@ function DetailedCourse({ course }) {
 
     return (
         <div className="App" style={{ backgroundColor: 'white' }}>
+            <TestComponent />
             <div className="dropdown">
                 <label>
                     <input
@@ -268,6 +267,7 @@ function DetailedCourse({ course }) {
             <svg ref={svgRef} width={700} height={400}></svg>
             <svg ref={legendRef} className="legend"></svg>
             <div ref={tooltipRef} className="tooltip"></div>
+            <div><GraphViewer root={cache.getCourse(decodeURIComponent(course))} /></div>
         </div>
     );
 }
