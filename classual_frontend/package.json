@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "aws-sdk": "^2.1617.0",
+    "d3": "^7.9.0",
+    "dotenv": "^16.4.5",
     "next": "14.2.3",
     "papaparse": "^5.4.1",
     "react": "^18",
