@@ -7,21 +7,23 @@
   cursor: move;
   user-select: none;
   touch-action: none;
+  overflow: auto;
+  fill: #fff;
 }
 
 .courseNodeVertex {
-  fill: var(--accent-blue);
+  fill: black;
   stroke: var(--accent-blue);
   stroke-width: 3px;
   cursor: pointer;
 }
 
 .courseNodeVertex:hover {
-  fill: #fff;
+  fill: purple;
 }
 
 .courseNodeVertex.courseOpen {
-  fill: #fff;
+  fill: blue;
 }
 
 .courseNodeVertex.courseOpen:hover {
@@ -47,6 +49,7 @@
   border-radius: 4px;
   padding: 2px 4px;
   cursor: pointer;
+  fill: red;
 }
 
 .courseNodeLabel.courseUnknown {
@@ -54,12 +57,12 @@
 }
 
 .edge {
-  stroke: var(--cool-gray);
+  stroke: black;
   stroke-width: 2;
 }
 
 .edgeArrowhead {
-  fill: var(--cool-gray);
+  fill: black;
 }
 
 .setNodeBox {
@@ -69,4 +72,9 @@
 .setNodeLabel {
   font-size: 10px;
   fill: var(--cool-gray);
+}
+
+.graphBox svg {
+  width: 100%;
+  height: 100%;
 }

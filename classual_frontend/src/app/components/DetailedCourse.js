@@ -268,7 +268,7 @@ function DetailedCourse({ course }) {
             <svg ref={svgRef} width={700} height={400}></svg>
             <svg ref={legendRef} className="legend"></svg>
             <div ref={tooltipRef} className="tooltip"></div>
-            <div style={{ backgroundColor: 'black' }}>
+            <div>
                 <IndependentGraphViewer courseCode={decodeURIComponent(course)} />
             </div>
         </div>
