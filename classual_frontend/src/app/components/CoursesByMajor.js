@@ -6,9 +6,8 @@ import Image from "next/image";
 import styles from '../page.module.css';
 import DropDownIcon from '../../../public/DropDownIcon.png';
 
-function CoursesByMajor() {
+function CoursesByMajor({ courses }) {
     const [isOpen, setIsOpen] = useState({});
-    const [majors, setMajors] = useState({});
 
     function toggledMajor(major) {
         setIsOpen((prev) => ({
@@ -17,39 +16,6 @@ function CoursesByMajor() {
         }));
     };
 
-    useEffect(() => {
-        fetchCourses();
-    }, []);
-
-    async function fetchCourses() {
-        try {
-            const res = await fetch('/api/fetchCourses');
-            const textData = await res.text();
-            const parsedText = parseCourses(textData);
-            setMajors(parsedText);
-        } catch (error) {
-            console.error("Failed to fetch courses:", error);
-        }
-    }
-
-    function parseCourses(text) {
-        const lines = text.split('\n');
-        const coursesByMajor = {};
-
-        lines.forEach((line) => {
-            const [major, courseNumbers] = line.split(' ');
-            const course = line.trim();
-
-            if (!coursesByMajor[major]) {
-                coursesByMajor[major] = [];
-            }
-
-            coursesByMajor[major].push(course);
-        });
-
-        return coursesByMajor;
-    }
-
     return (
         <div className={styles.coursesMajorContainer}>
             <div className={styles.bottomIndicatorText}>
@@ -57,7 +23,7 @@ function CoursesByMajor() {
             </div>
 
             <div className={styles.majorAndClassContainer}>
-                {Object.entries(majors).map(([major, courses]) => (
+                {Object.entries(courses).map(([major, courseList]) => (
                     <div key={major}>
                         <div className={styles.majorText} onClick={() => toggledMajor(major)}>
                             {major}
@@ -71,8 +37,8 @@ function CoursesByMajor() {
 
                         {isOpen[major] && (
                             <div>
-                                {courses.map((course) => (
-                                    <Link key={course} href={`/${course}`} className={styles.classText}>
+                                {courseList.map((course, index) => (
+                                    <Link key={index} href={`/${course}`} className={styles.classText}>
                                         {course}
                                     </Link>
                                 ))}
