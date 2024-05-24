@@ -3,9 +3,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import parseCSV from '../lib/processCSV';
+import parseTimeLineData from '../lib/processTimeLine';
+
 
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
+    const [timeLineData, setTimeLineData] = useState({});
+    const [quarter, setQuarter] = useState('2023Fall');
     const [visibleLines, setVisibleLines] = useState({
         enrolledNumber: true,
         waitlistNumber: true,
@@ -18,19 +22,36 @@ function DetailedCourse({ course }) {
 
     useEffect(() => {
         if (course) {
-            fetchAndProcess(course);
+            fetchCourseAndProcess(course);
         }
     }, [course]);
 
-    async function fetchAndProcess(course) {
+    useEffect(() => {
+        if (quarter) {
+            fetchTimeLineData(quarter);
+        }
+    }, [quarter]);
+
+    async function fetchCourseAndProcess(course) {
         try {
             const res = await fetch(`/api/fetchCSV?course=${course}`);
             const csv = await res.text();
             const formattedData = parseCSV(csv, course);
-            console.log('Formatted Data:', formattedData);
             setData(formattedData);
         } catch (error) {
             console.error("Failed to fetch and parse CSV data:", error);
+        }
+    }
+
+    async function fetchTimeLineData(quarter) {
+        try {
+            const res = await fetch(`/api/fetchTimeLine?quarter=${quarter}`);
+            const data = await res.json();
+            const parsedData = parseTimeLineData(data);
+            console.log('Time Parsed Data (parsedData):', parsedData);
+            setTimeLineData(parsedData);
+        } catch (error) {
+            console.error("Failed to fetch time line data:", error);
         }
     }
 

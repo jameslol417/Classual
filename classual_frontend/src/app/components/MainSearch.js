@@ -19,13 +19,12 @@ function MainSearch({ courses }) {
 
     return (
         <div className={styles.topContainer}>
-
             <div className={styles.titleTxt}>
                 UCSD Classual (Class + Visual)
             </div>
 
             <div className={styles.searchContainer}>
-                <div>
+                <div className={styles.searchInputContainer}>
                     <input
                         type="text"
                         value={searchTerm}
@@ -34,13 +33,16 @@ function MainSearch({ courses }) {
                         className={styles.searchInput}
                     />
 
-                    <div className={styles.searchResults}>
-                        {searchTerm && filteredCourse.map((course, index) => (
-                            <Link key={index} href={`/${course}`} className={styles.searchResultItem}>
-                                {course}
-                            </Link>
-                        ))}
-                    </div>
+
+                    {searchTerm && (
+                        <div className={styles.searchResults}>
+                            {filteredCourse.map((course, index) => (
+                                <Link key={index} href={`/${course}`} className={styles.searchResultItem}>
+                                    {course}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
 
@@ -59,7 +61,7 @@ function MainSearch({ courses }) {
 
             </div>
 
-        </div>
+        </div >
     )
 
 }

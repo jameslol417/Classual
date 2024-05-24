@@ -82,19 +82,22 @@
 }
 
 .searchResults {
-  width: 100%;
-
+  width: 50%;
+  background-color: white;
+  position: absolute;
+  z-index: 100;
 }
 
 .searchResultItem {
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
-  border-radius: 10px;
-  background-color: white;
+  border: 0.5px solid black;
   padding: 1rem;
-  margin: 0.3rem;
-  z-index: 100;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.searchResultItem:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
