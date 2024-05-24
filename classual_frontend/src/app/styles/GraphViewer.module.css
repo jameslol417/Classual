@@ -8,18 +8,18 @@
   user-select: none;
   touch-action: none;
   overflow: auto;
-  fill: #fff;
+  fill: rgb(203, 230, 240);
 }
 
 .courseNodeVertex {
-  fill: black;
-  stroke: var(--accent-blue);
+  /* fill: black; */
+  stroke:  #7beef8;
   stroke-width: 3px;
   cursor: pointer;
 }
 
 .courseNodeVertex:hover {
-  fill: purple;
+  fill: #fff;
 }
 
 .courseNodeVertex.courseOpen {
@@ -27,33 +27,33 @@
 }
 
 .courseNodeVertex.courseOpen:hover {
-  fill: var(--accent-blue);
+  fill:  #fff;
 }
 
 .courseNodeVertex.courseNoPrereqs {
-  fill: var(--light-gray);
-  stroke: var(--light-gray);
+  fill: #b7babd;
+  stroke: #b7babd;
   cursor: unset;
 }
 
 .courseNodeVertex.courseUnknown {
-  fill: var(--light-red);
-  stroke: var(--light-red);
+  fill: #ff8080;
+  stroke: #ff8080;
   cursor: unset;
 }
 
 .courseNodeLabel {
   font-size: 16px;
   font-weight: bold;
-  fill: var(--accent-blue);
+  fill:  #7beef8;
   border-radius: 4px;
   padding: 2px 4px;
   cursor: pointer;
-  fill: red;
+  fill: black;
 }
 
 .courseNodeLabel.courseUnknown {
-  background-color: var(--light-red);
+  background-color: #ff8080;
 }
 
 .edge {
@@ -66,12 +66,12 @@
 }
 
 .setNodeBox {
-  fill: var(--accent-blue-translucent);
+  fill: #00c5d720;;
 }
 
 .setNodeLabel {
   font-size: 10px;
-  fill: var(--cool-gray);
+  fill: #747678;
 }
 
 .graphBox svg {

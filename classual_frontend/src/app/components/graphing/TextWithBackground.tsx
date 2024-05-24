@@ -29,10 +29,10 @@ function TextWithBackground({
       const computedStyle = getComputedStyle(textRef.current);
       setTextWidth(textBounds.width);
       setTextHeight(textBounds.height);
-      // setBackgroundColor(computedStyle.backgroundColor || "#0000");
-      // setBorderRadius(parseInt(computedStyle.borderRadius || "0", 10));
-      // setVerticalPadding(parseInt(computedStyle.paddingTop || "0", 10));
-      // setHorizontalPadding(parseInt(computedStyle.paddingLeft || "0", 10));
+      setBackgroundColor(computedStyle.backgroundColor || "#0000");
+      setBorderRadius(parseInt(computedStyle.borderRadius || "0", 10));
+      setVerticalPadding(parseInt(computedStyle.paddingTop || "0", 10));
+      setHorizontalPadding(parseInt(computedStyle.paddingLeft || "0", 10));
     }
   }, [children, className]);
 
@@ -46,7 +46,7 @@ function TextWithBackground({
           y={y - textHeight / 2 - verticalPadding}
           width={textWidth + horizontalPadding * 2}
           height={textHeight + verticalPadding * 2}
-          // fill={backgroundColor}
+          fill={backgroundColor}
           rx={borderRadius}
           ry={borderRadius}
         />
