@@ -49,10 +49,12 @@ function CourseNode({ node, dispatch }: CourseNodeProps) {
         r={vertexRadius}
         className={vertexClassName}
         onClick={(event) => {
-          dispatch({
-            type: node.state === "closed" ? "open" : "close",
-            payload: node,
-          });
+          if (node.state !== "unknown") {
+            dispatch({
+              type: node.state === "closed" ? "open" : "close",
+              payload: node,
+            });
+          }
           event.preventDefault();
         }}
       />

@@ -194,7 +194,7 @@ export function IndependentGraphViewer({
   if (!course) {
     return (
       <div className={styles.graphBox}>
-        <p>Loading...</p>
+        <p>Class Tree Does Not Exist!</p>
       </div>
     );
   }
