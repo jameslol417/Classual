@@ -82,16 +82,31 @@ function DetailedCourse({ course }) {
     }
 
     useEffect(() => {
-        if (data.length > 0) {
+        if (course) {
+            fetchCourseAndProcess(course);
+        }
+    }, [course, quarter]);
+
+    useEffect(() => {
+        if (quarter) {
+            fetchTimeLineData(quarter);
+        }
+    }, [quarter]);
+
+    useEffect(() => {
+        if (data.length > 0 && Object.keys(timeLineData).length > 0) {
             drawChart();
         }
-    }, [data, visibleLines, showFirstPass, showSecondPass]);
+    }, [data, visibleLines, showFirstPass, showSecondPass, timeLineData]);
 
     const drawChart = () => {
-        if (timeLineData) {
-        console.log("timeLineData!!")
-        
+
+        // console.log("timeLineDATa in drawChart ", timeLineData);
+        // console.log("timeLineDATa.firstPass?.End in drawChart ", timeLineData.firstPass?.End);
+
         const svg = d3.select(svgRef.current)
+            .attr('width', 700)
+            .attr('height', 400)
             .attr('style', 'background: white;');
 
         const margin = { top: 120, right: 40, bottom: 40, left: 50 };
@@ -101,8 +116,27 @@ function DetailedCourse({ course }) {
         svg.selectAll('*').remove();
 
         const parseTime = d3.timeParse('%Y-%m-%d');
+        const dataExtent = d3.extent(data, d => parseTime(d.time));
+
+        // Include timeline dates in the xScale domain
+        const timelineDates = [
+            timeLineData.firstPass?.FreshmenStart,
+            timeLineData.firstPass?.End,
+            timeLineData.secondPass?.FreshmenStart,
+            timeLineData.secondPass?.End
+        ].filter(date => date).map(parseTime);
+
+
+        const combinedDates = [
+            ...data.map(d => parseTime(d.time)),
+            parseTime(timeLineData.firstPass?.FreshmenStart),
+            parseTime(timeLineData.firstPass?.End),
+            parseTime(timeLineData.secondPass?.FreshmenStart),
+            parseTime(timeLineData.secondPass?.End)
+        ].filter(date => date);
+
         const xScale = d3.scaleTime()
-            .domain(d3.extent(data, d => parseTime(d.time)))
+            .domain(d3.extent(combinedDates))
             .range([0, width]);
 
         const yScale = d3.scaleLinear()
@@ -111,7 +145,7 @@ function DetailedCourse({ course }) {
             .range([height, 0]);
 
         const line = d3.line()
-            .x(d => xScale(parseTime(d.time)))
+            .x(d => xScale(d.time))
             .y(d => yScale(d.value));
 
         const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
@@ -119,47 +153,82 @@ function DetailedCourse({ course }) {
 
         const nestedData = colorScale.domain().map(key => ({
             key,
-            values: data.map(d => ({ time: parseTime(d.time), value: +d[key] }))
+            values: data.map(d => {
+                const parsedTime = parseTime(d.time);
+                const value = +d[key];
+                if (isNaN(parsedTime) || isNaN(value)) {
+                    return null; // Return null for invalid entries
+                }
+                return { time: parsedTime, value: value };
+            }).filter(d => d !== null) // Filter out invalid entries
         }));
 
+        const addShadedArea = (start, end, color, className) => {
+            console.log(`Original start: ${start}, Original end: ${end}`); // Log original dates
 
-        if (showFirstPass) {
+            const parsedStart = parseTime(start);
+            const parsedEnd = parseTime(end);
+            if (!parsedStart || !parsedEnd) {
+                console.error(`Error parsing dates: ${start}, ${end}`);
+                return;
+            }
+
+            console.log(`Parsed start: ${parsedStart}, Parsed end: ${parsedEnd}`); // Log parsed dates
+
+            if (parsedStart >= parsedEnd) {
+                console.error(`Invalid date range: ${start} to ${end}`);
+                return;
+            }
+
+            const [minX, maxX] = xScale.domain();
+            const adjustedStart = d3.max([parsedStart, minX]);
+            const adjustedEnd = d3.min([parsedEnd, maxX]);
+
+            if (adjustedStart >= adjustedEnd) {
+                console.warn(`Adjusted date range out of bounds or invalid: ${adjustedStart} to ${adjustedEnd}`);
+                return;
+            }
+
+            console.log(`Adjusted start: ${adjustedStart}, Adjusted end: ${adjustedEnd}`); // Log adjusted dates
+
+            const xStart = xScale(adjustedStart);
+            const xEnd = xScale(adjustedEnd);
+
+            if (xStart < 0 || xEnd < 0) {
+                console.warn(`Negative positions calculated: xStart = ${xStart}, xEnd = ${xEnd}`);
+                return;
+            }
+
             svg.append('rect')
-                .attr('class', 'shaded-area-first')
-                .attr('x', xScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
-                .attr('y', 0)
-                .attr('width', xScale(parseTime(timeLineData.firstPass?.End)) - xScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
+                .attr('x', xStart)
+                .attr('y', margin.top)
+                .attr('width', xEnd - xStart)
                 .attr('height', height)
-                .attr('fill', 'pink')
+                .attr('fill', color)
                 .attr('opacity', 0.5)
-                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+                .attr('class', className)
+                .attr('transform', `translate(${margin.left}, 0)`);
+        };
+
+        // Adding shaded areas for first pass and second pass
+        if (showFirstPass && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
+            addShadedArea(timeLineData.firstPass.FreshmenStart, timeLineData.firstPass.End, 'pink');
         }
 
-        if (showSecondPass) {
-            svg.append('rect')
-                .attr('class', 'shaded-area-second')
-                .attr('x', xScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
-                .attr('y', 0)
-                .attr('width', xScale(parseTime(timeLineData.secondPass?.End)) - xScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
-                .attr('height', height)
-                .attr('fill', 'skyblue')
-                .attr('opacity', 0.5)
-                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        if (showSecondPass && timeLineData.secondPass?.FreshmenStart && timeLineData.secondPass?.End) {
+            addShadedArea(timeLineData.secondPass.FreshmenStart, timeLineData.secondPass.End, 'skyblue');
         }
 
         const lineGroup = svg.append("g")
-            .attr("transform", `translate(${margin.left}, ${margin.top})`)
-            .attr("clip-path", "url(#clip)"); // Clip path to keep lines within axes
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-        if (nestedData[0].values[0].time) {
-            lineGroup.selectAll(".line")
-                .data(nestedData.filter(d => visibleLines[d.key]))
-                .enter().append("path")
-                .attr("class", "line")
-                .attr("d", d => line(d.values))
-                .style("stroke", d => colorScale(d.key))
-                .style("fill", "none"); // Ensure no fill color is applied
-        }
+        lineGroup.selectAll(".line")
+            .data(nestedData.filter(d => visibleLines[d.key]))
+            .enter().append("path")
+            .attr("class", "line")
+            .attr("d", d => line(d.values))
+            .style("stroke", d => colorScale(d.key))
+            .style("fill", "none");
 
         // Define clip path
         svg.append("defs").append("clipPath")
@@ -288,6 +357,7 @@ function DetailedCourse({ course }) {
                         .attr('width', newXScale(parseTime(timeLineData.firstPass?.End)) - newXScale(parseTime(timeLineData.firstPass?.FreshmenStart)));
                 }
 
+
                 if (showSecondPass) {
                     svg.select('.shaded-area-second')
                         .attr('x', newXScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
@@ -296,7 +366,7 @@ function DetailedCourse({ course }) {
             });
 
         svg.call(zoom);
-        }
+
     };
 
     const handleToggleLine = (key) => {
