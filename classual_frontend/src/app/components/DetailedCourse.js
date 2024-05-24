@@ -6,12 +6,18 @@ import parseCSV from '../lib/processCSV';
 import parseTimeLineData from '../lib/processTimeLine';
 import styles from '../page.module.css';
 
+// const firstPassStart = timeLineData.firstPass?.FreshmenStart;
+// const firstPassEnd = '2023-07-16';
+
+// const secondPassStart = '2023-08-12';
+// const secondPassEnd = "2023-09-12";
 
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
     const decodeCourse = decodeURIComponent(course);
     const [timeLineData, setTimeLineData] = useState({});
     const [quarter, setQuarter] = useState('2023Fall');
+
 
     const [visibleLines, setVisibleLines] = useState({
         enrolledNumber: true,
@@ -35,6 +41,7 @@ function DetailedCourse({ course }) {
     useEffect(() => {
         if (quarter) {
             fetchTimeLineData(quarter);
+            console.log("timeLine DATA:: ", timeLineData);
         }
     }, [quarter]);
 
@@ -68,6 +75,9 @@ function DetailedCourse({ course }) {
     }, [data, visibleLines, showFirstPass, showSecondPass]);
 
     const drawChart = () => {
+        if (timeLineData) {
+        console.log("timeLineData!!")
+        
         const svg = d3.select(svgRef.current)
             .attr('style', 'background: white;');
 
@@ -103,9 +113,9 @@ function DetailedCourse({ course }) {
         if (showFirstPass) {
             svg.append('rect')
                 .attr('class', 'shaded-area-first')
-                .attr('x', xScale(parseTime(firstPassStart)))
+                .attr('x', xScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
                 .attr('y', 0)
-                .attr('width', xScale(parseTime(firstPassEnd)) - xScale(parseTime(firstPassStart)))
+                .attr('width', xScale(parseTime(timeLineData.firstPass?.End)) - xScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
                 .attr('height', height)
                 .attr('fill', 'pink')
                 .attr('opacity', 0.5)
@@ -115,9 +125,9 @@ function DetailedCourse({ course }) {
         if (showSecondPass) {
             svg.append('rect')
                 .attr('class', 'shaded-area-second')
-                .attr('x', xScale(parseTime(secondPassStart)))
+                .attr('x', xScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
                 .attr('y', 0)
-                .attr('width', xScale(parseTime(secondPassEnd)) - xScale(parseTime(secondPassStart)))
+                .attr('width', xScale(parseTime(timeLineData.secondPass?.End)) - xScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
                 .attr('height', height)
                 .attr('fill', 'skyblue')
                 .attr('opacity', 0.5)
@@ -261,18 +271,19 @@ function DetailedCourse({ course }) {
                 // Update the shaded areas
                 if (showFirstPass) {
                     svg.select('.shaded-area-first')
-                        .attr('x', newXScale(parseTime(firstPassStart)))
-                        .attr('width', newXScale(parseTime(firstPassEnd)) - newXScale(parseTime(firstPassStart)));
+                        .attr('x', newXScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.firstPass?.End)) - newXScale(parseTime(timeLineData.firstPass?.FreshmenStart)));
                 }
 
                 if (showSecondPass) {
                     svg.select('.shaded-area-second')
-                        .attr('x', newXScale(parseTime(secondPassStart)))
-                        .attr('width', newXScale(parseTime(secondPassEnd)) - newXScale(parseTime(secondPassStart)));
+                        .attr('x', newXScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.secondPass?.End)) - newXScale(parseTime(timeLineData.secondPass?.FreshmenStart)));
                 }
             });
 
         svg.call(zoom);
+        }
     };
 
     const handleToggleLine = (key) => {
