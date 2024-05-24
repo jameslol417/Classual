@@ -14,9 +14,6 @@ import styles from '../page.module.css';
 import * as cache from '../utils/frontend-cache';
 import TestComponent from './Test';
 
-import GraphViewer from "./GraphViewer";
-import { IndependentGraphViewer } from "../components/GraphViewer";
-
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
     const decodeCourse = decodeURIComponent(course);
