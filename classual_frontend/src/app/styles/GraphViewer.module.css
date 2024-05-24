@@ -2,13 +2,18 @@
   width: 100%;
   min-width: 12rem;
   height: 32rem;
-  border: 1px solid var(--cool-gray);
+  border: 1px solid var(--light-red);
   border-radius: 0.5rem;
   cursor: move;
   user-select: none;
   touch-action: none;
+<<<<<<< HEAD
   overflow: auto;
   fill: #fff;
+=======
+  opacity: 0.2;
+  background-color: gray;
+>>>>>>> e5229fb9 (fixed links)
 }
 
 .courseNodeVertex {
@@ -45,7 +50,7 @@
 .courseNodeLabel {
   font-size: 16px;
   font-weight: bold;
-  background-color: var(--accent-blue);
+  fill: var(--accent-blue);
   border-radius: 4px;
   padding: 2px 4px;
   cursor: pointer;

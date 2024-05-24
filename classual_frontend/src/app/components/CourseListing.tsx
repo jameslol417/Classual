@@ -12,7 +12,7 @@ function CourseListing({ course }: CourseListingProps) {
   // TODO: pluralize "unit(s)" when possible
   return (
     <div id={slugifyCourseCode(course.code)}>
-      <Link href={`/courses/${slugifyCourseCode(course.code)}`}>
+      <Link href={`/${slugifyCourseCode(course.code)}`}>
         {/* <a>
           <h3>{`${course.code}. ${course.title} (${course.units} units)`}</h3>
         </a> */}

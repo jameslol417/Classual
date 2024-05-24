@@ -61,7 +61,7 @@ function CourseNode({ node, dispatch }: CourseNodeProps) {
         y={node.y}
         className={labelClassName}
       >
-        <Link href={`/courses/${slugifyCourseCode(node.code)}`}>
+        <Link href={`/${node.code}`}>
           {node.code}
         </Link>
       </TextWithBackground>
@@ -85,7 +85,7 @@ function CourseNode({ node, dispatch }: CourseNodeProps) {
                   : `${styles.courseNodeLabel} ${styles.courseUnknown}`
               }
             >
-              <Link href={`/courses/${slugifyCourseCode(coreq.code)}`}>
+              <Link href={`/${coreq.code}`}>
                 {coreq.code}
               </Link>
             </TextWithBackground>

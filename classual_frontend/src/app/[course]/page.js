@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import DetailedCourse from '../components/DetailedCourse';
-import TestComponent from '../components/Test';
+import { IndependentGraphViewer } from "../components/GraphViewer";
 
 export default function CoursePage() {
     const { course } = useParams();
@@ -22,7 +22,7 @@ export default function CoursePage() {
     return (
         <div>
             <DetailedCourse course={currentCourse} />
-            <TestComponent />
+            <IndependentGraphViewer courseCode={decodeURIComponent(course)} />
         </div>
     
         );
