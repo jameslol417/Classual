@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useReducer } from 'react';
 import * as d3 from 'd3';
 import parseCSV from '../lib/processCSV';
 import parseTimeLineData from '../lib/processTimeLine';
@@ -11,6 +11,11 @@ import styles from '../page.module.css';
 
 // const secondPassStart = '2023-08-12';
 // const secondPassEnd = "2023-09-12";
+import * as cache from '../utils/frontend-cache';
+import TestComponent from './Test';
+
+import GraphViewer from "./GraphViewer";
+import { IndependentGraphViewer } from "../components/GraphViewer";
 
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
@@ -31,6 +36,17 @@ function DetailedCourse({ course }) {
     const svgRef = useRef();
     const legendRef = useRef();
     const tooltipRef = useRef();
+
+    // useEffect(() => {
+    //     // initialize the graph
+    //     async function loadGraph() {
+    //         const nodeCourse = await cache.getCourse(decodeURIComponent(course));
+    //         const rootNode = await makeGraph(nodeCourse);
+    //         // call treeReducer
+    //         dispatch({ type: "initialize", payload: rootNode });
+    //     }
+    //     loadGraph();
+    // }, [course]);
 
     useEffect(() => {
         if (course) {
@@ -303,6 +319,7 @@ function DetailedCourse({ course }) {
 
     return (
         <div className="App" style={{ backgroundColor: 'white' }}>
+            <TestComponent />
             <div className="dropdown">
                 <label className={styles.checkBtn}>
                     <input

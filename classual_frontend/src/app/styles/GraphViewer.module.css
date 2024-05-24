@@ -1,0 +1,80 @@
+.graphBox {
+  width: 100%;
+  min-width: 12rem;
+  height: 32rem;
+  border: 1px solid var(--light-red);
+  border-radius: 0.5rem;
+  cursor: move;
+  user-select: none;
+  touch-action: none;
+  overflow: auto;
+  fill: rgb(203, 230, 240);
+}
+
+.courseNodeVertex {
+  /* fill: black; */
+  stroke:  #7beef8;
+  stroke-width: 3px;
+  cursor: pointer;
+}
+
+.courseNodeVertex:hover {
+  fill: #fff;
+}
+
+.courseNodeVertex.courseOpen {
+  fill: blue;
+}
+
+.courseNodeVertex.courseOpen:hover {
+  fill:  #fff;
+}
+
+.courseNodeVertex.courseNoPrereqs {
+  fill: #b7babd;
+  stroke: #b7babd;
+  cursor: unset;
+}
+
+.courseNodeVertex.courseUnknown {
+  fill: #ff8080;
+  stroke: #ff8080;
+  cursor: unset;
+}
+
+.courseNodeLabel {
+  font-size: 16px;
+  font-weight: bold;
+  fill:  #7beef8;
+  border-radius: 4px;
+  padding: 2px 4px;
+  cursor: pointer;
+  fill: black;
+}
+
+.courseNodeLabel.courseUnknown {
+  background-color: #ff8080;
+}
+
+.edge {
+  stroke: black;
+  stroke-width: 2;
+}
+
+.edgeArrowhead {
+  fill: black;
+}
+
+.setNodeBox {
+  fill: #00c5d720;;
+}
+
+.setNodeLabel {
+  font-size: 10px;
+  fill: #747678;
+}
+
+.graphBox svg {
+  width: 100%;
+  height: 100%;
+}
