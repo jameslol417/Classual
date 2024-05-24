@@ -3,14 +3,30 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import parseCSV from '../lib/processCSV';
+import parseTimeLineData from '../lib/processTimeLine';
+import styles from '../page.module.css';
+
+// const firstPassStart = timeLineData.firstPass?.FreshmenStart;
+// const firstPassEnd = '2023-07-16';
+
+// const secondPassStart = '2023-08-12';
+// const secondPassEnd = "2023-09-12";
 
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
+    const decodeCourse = decodeURIComponent(course);
+    const [timeLineData, setTimeLineData] = useState({});
+    const [quarter, setQuarter] = useState('2023Fall');
+
+
     const [visibleLines, setVisibleLines] = useState({
         enrolledNumber: true,
         waitlistNumber: true,
         totalSeatNumber: true,
     });
+
+    const [showFirstPass, setShowFirstPass] = useState(true);
+    const [showSecondPass, setShowSecondPass] = useState(true);
 
     const svgRef = useRef();
     const legendRef = useRef();
@@ -18,19 +34,37 @@ function DetailedCourse({ course }) {
 
     useEffect(() => {
         if (course) {
-            fetchAndProcess(course);
+            fetchCourseAndProcess(course);
         }
     }, [course]);
 
-    async function fetchAndProcess(course) {
+    useEffect(() => {
+        if (quarter) {
+            fetchTimeLineData(quarter);
+            console.log("timeLine DATA:: ", timeLineData);
+        }
+    }, [quarter]);
+
+    async function fetchCourseAndProcess(course) {
         try {
             const res = await fetch(`/api/fetchCSV?course=${course}`);
             const csv = await res.text();
             const formattedData = parseCSV(csv, course);
-            console.log('Formatted Data:', formattedData);
             setData(formattedData);
         } catch (error) {
             console.error("Failed to fetch and parse CSV data:", error);
+        }
+    }
+
+    async function fetchTimeLineData(quarter) {
+        try {
+            const res = await fetch(`/api/fetchTimeLine?quarter=${quarter}`);
+            const data = await res.json();
+            const parsedData = parseTimeLineData(data);
+            console.log('Time Parsed Data (parsedData):', parsedData);
+            setTimeLineData(parsedData);
+        } catch (error) {
+            console.error("Failed to fetch time line data:", error);
         }
     }
 
@@ -38,9 +72,12 @@ function DetailedCourse({ course }) {
         if (data.length > 0) {
             drawChart();
         }
-    }, [data, visibleLines]);
+    }, [data, visibleLines, showFirstPass, showSecondPass]);
 
     const drawChart = () => {
+        if (timeLineData) {
+        console.log("timeLineData!!")
+        
         const svg = d3.select(svgRef.current)
             .attr('style', 'background: white;');
 
@@ -50,7 +87,7 @@ function DetailedCourse({ course }) {
 
         svg.selectAll('*').remove();
 
-        const parseTime = d3.timeParse('%Y-%m-%d'); // Ensure this matches your time format
+        const parseTime = d3.timeParse('%Y-%m-%d');
         const xScale = d3.scaleTime()
             .domain(d3.extent(data, d => parseTime(d.time)))
             .range([0, width]);
@@ -61,37 +98,41 @@ function DetailedCourse({ course }) {
             .range([height, 0]);
 
         const line = d3.line()
-            .x(d => xScale(d.time)) // Remove the parseTime here since it was already parsed
+            .x(d => xScale(parseTime(d.time)))
             .y(d => yScale(d.value));
 
         const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-            .domain(['enrolledNumber', 'waitlistNumber', 'totalSeatNumber']);
+            .domain(['enrolledNumber', 'waitlistNumber', 'totalSeatNumber', 'FirstPass', 'Second Pass']);
 
         const nestedData = colorScale.domain().map(key => ({
             key,
             values: data.map(d => ({ time: parseTime(d.time), value: +d[key] }))
         }));
 
-        console.log('Nested Data:', nestedData); // Debugging statement
 
-        const zoom = d3.zoom()
-            .scaleExtent([1, 10])
-            .translateExtent([[0, 0], [width, height]])
-            .extent([[0, 0], [width, height]])
-            .on('zoom', (event) => {
-                const newXScale = event.transform.rescaleX(xScale);
-                const newYScale = event.transform.rescaleY(yScale);
+        if (showFirstPass) {
+            svg.append('rect')
+                .attr('class', 'shaded-area-first')
+                .attr('x', xScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
+                .attr('y', 0)
+                .attr('width', xScale(parseTime(timeLineData.firstPass?.End)) - xScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
+                .attr('height', height)
+                .attr('fill', 'pink')
+                .attr('opacity', 0.5)
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        }
 
-                // Update the axes
-                svg.select('.x-axis').call(d3.axisBottom(newXScale));
-                svg.select('.y-axis').call(d3.axisLeft(newYScale));
-
-                // Update the lines
-                lineGroup.selectAll(".line")
-                    .attr("d", d => line.x(d => newXScale(d.time)).y(d => newYScale(d.value))(d.values));
-            });
-
-        svg.call(zoom);
+        if (showSecondPass) {
+            svg.append('rect')
+                .attr('class', 'shaded-area-second')
+                .attr('x', xScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
+                .attr('y', 0)
+                .attr('width', xScale(parseTime(timeLineData.secondPass?.End)) - xScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
+                .attr('height', height)
+                .attr('fill', 'skyblue')
+                .attr('opacity', 0.5)
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        }
 
         const lineGroup = svg.append("g")
             .attr("transform", `translate(${margin.left}, ${margin.top})`)
@@ -133,15 +174,15 @@ function DetailedCourse({ course }) {
             .attr('text-anchor', 'middle')
             .style('font-size', '18px')
             .style('font-weight', 'bold')
-            .text('Course Enrollment Status');
+            .text(decodeCourse);
 
         // Source
         svg.append('text')
             .attr('x', width + margin.left)
-            .attr('y', height + margin.top + margin.bottom / 2)
+            .attr('y', height + margin.top + margin.bottom)
             .attr('text-anchor', 'end')
             .style('font-size', '10px')
-            .text('Source: Your Source');
+            .text('Date & Time');
 
         // Legend
         const legend = d3.select(legendRef.current);
@@ -191,7 +232,6 @@ function DetailedCourse({ course }) {
                 const a = d.values[index - 1];
                 const b = d.values[index];
 
-                // Ensure a and b are defined before accessing their properties
                 if (!a || !b) {
                     return { key: d.key, value: 'N/A' };
                 }
@@ -211,6 +251,39 @@ function DetailedCourse({ course }) {
         svg.on('mouseout', function () {
             tooltip.style('visibility', 'hidden');
         });
+
+        const zoom = d3.zoom()
+            .scaleExtent([1, 10])
+            .translateExtent([[0, 0], [width, height]])
+            .extent([[0, 0], [width, height]])
+            .on('zoom', (event) => {
+                const newXScale = event.transform.rescaleX(xScale);
+                const newYScale = event.transform.rescaleY(yScale);
+
+                // Update the axes
+                svg.select('.x-axis').call(d3.axisBottom(newXScale));
+                svg.select('.y-axis').call(d3.axisLeft(newYScale));
+
+                // Update the lines
+                lineGroup.selectAll(".line")
+                    .attr("d", d => line.x(d => newXScale(d.time)).y(d => newYScale(d.value))(d.values));
+
+                // Update the shaded areas
+                if (showFirstPass) {
+                    svg.select('.shaded-area-first')
+                        .attr('x', newXScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.firstPass?.End)) - newXScale(parseTime(timeLineData.firstPass?.FreshmenStart)));
+                }
+
+                if (showSecondPass) {
+                    svg.select('.shaded-area-second')
+                        .attr('x', newXScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.secondPass?.End)) - newXScale(parseTime(timeLineData.secondPass?.FreshmenStart)));
+                }
+            });
+
+        svg.call(zoom);
+        }
     };
 
     const handleToggleLine = (key) => {
@@ -220,10 +293,18 @@ function DetailedCourse({ course }) {
         }));
     };
 
+    const handleToggleFirstPass = () => {
+        setShowFirstPass(prev => !prev);
+    };
+
+    const handleToggleSecondPass = () => {
+        setShowSecondPass(prev => !prev);
+    };
+
     return (
         <div className="App" style={{ backgroundColor: 'white' }}>
             <div className="dropdown">
-                <label>
+                <label className={styles.checkBtn}>
                     <input
                         type="checkbox"
                         checked={visibleLines.enrolledNumber}
@@ -231,7 +312,7 @@ function DetailedCourse({ course }) {
                     />
                     Enrolled
                 </label>
-                <label>
+                <label className={styles.checkBtn}>
                     <input
                         type="checkbox"
                         checked={visibleLines.waitlistNumber}
@@ -239,13 +320,29 @@ function DetailedCourse({ course }) {
                     />
                     Waitlisted
                 </label>
-                <label>
+                <label className={styles.checkBtn}>
                     <input
                         type="checkbox"
                         checked={visibleLines.totalSeatNumber}
                         onChange={() => handleToggleLine('totalSeatNumber')}
                     />
                     Total
+                </label>
+                <label className={styles.checkBtn}>
+                    <input
+                        type="checkbox"
+                        checked={showFirstPass}
+                        onChange={handleToggleFirstPass}
+                    />
+                    First Pass
+                </label>
+                <label className={styles.checkBtn}>
+                    <input
+                        type="checkbox"
+                        checked={showSecondPass}
+                        onChange={handleToggleSecondPass}
+                    />
+                    Second Pass
                 </label>
             </div>
             <svg ref={svgRef} width={700} height={400}></svg>

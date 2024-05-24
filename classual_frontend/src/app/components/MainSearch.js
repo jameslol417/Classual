@@ -4,35 +4,50 @@ import Image from 'next/image';
 import { useEffect, useState } from "react";
 import styles from '../page.module.css';
 import searchIcon from '../../../public/searchIcon.png'
+import Link from 'next/link';
 
 
-function MainSearch() {
-    const [searchCourse, setSearchCourse] = useState('');
-
-    // TODOS need to implement search algorithm: 
-    // pull all the list of courses in a list and list up to 5 that matches
+function MainSearch({ courses }) {
+    const [searchTerm, setSerachTerm] = useState('');
+    const allCourses = Object.values(courses).flat();
+    const filteredCourse = allCourses.filter(course => course.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 5);
 
     function searchClicked() {
-        console.log("searching for: ", searchCourse);
+        console.log("searching for: ", searchTerm);
+        setSerachTerm(searchTerm);
     }
 
     return (
         <div className={styles.topContainer}>
-
             <div className={styles.titleTxt}>
                 UCSD Classual (Class + Visual)
             </div>
 
             <div className={styles.searchContainer}>
-                <input
-                    type="text"
-                    value={searchCourse}
-                    onChange={(e) => setSearchCourse(e.target.value)}
-                    placeholder="Search for your course!"
-                    className={styles.searchInput}
-                />
+                <div className={styles.searchInputContainer}>
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSerachTerm(e.target.value)}
+                        placeholder="Search for your course!"
+                        className={styles.searchInput}
+                    />
+
+
+                    {searchTerm && (
+                        <div className={styles.searchResults}>
+                            {filteredCourse.map((course, index) => (
+                                <Link key={index} href={`/${course}`} className={styles.searchResultItem}>
+                                    {course}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+
                 <button
-                    onClick={searchClicked}
+                    onClick={() => console.log("searching for:", searchTerm)}
                     className={styles.searchButton}
                 >
                     <Image
@@ -43,9 +58,10 @@ function MainSearch() {
                         className={styles.imageStyle}
                     />
                 </button>
+
             </div>
 
-        </div>
+        </div >
     )
 
 }
