@@ -6,18 +6,12 @@ import parseCSV from '../lib/processCSV';
 import parseTimeLineData from '../lib/processTimeLine';
 import styles from '../page.module.css';
 
-// const firstPassStart = timeLineData.firstPass.FreshmenStart;
-// const firstPassEnd = '2023-07-16';
-
-// const secondPassStart = '2023-08-12';
-// const secondPassEnd = "2023-09-12";
 
 function DetailedCourse({ course }) {
     const [data, setData] = useState([]);
     const decodeCourse = decodeURIComponent(course);
     const [timeLineData, setTimeLineData] = useState({});
     const [quarter, setQuarter] = useState('2023Fall');
-
 
     const [visibleLines, setVisibleLines] = useState({
         enrolledNumber: true,
@@ -41,7 +35,6 @@ function DetailedCourse({ course }) {
     useEffect(() => {
         if (quarter) {
             fetchTimeLineData(quarter);
-            console.log("timeLine DATA:: ", timeLineData);
         }
     }, [quarter]);
 
