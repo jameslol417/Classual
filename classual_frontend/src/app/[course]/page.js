@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import DetailedCourse from '../components/DetailedCourse';
+import LineGraphComponent from '../components/LineGraphComponent';
 import { IndependentGraphViewer } from "../components/GraphViewer";
 
 export default function CoursePage() {
@@ -21,9 +21,9 @@ export default function CoursePage() {
 
     return (
         <div>
-            <DetailedCourse course={currentCourse} />
+            <LineGraphComponent course={currentCourse} />
             <IndependentGraphViewer courseCode={decodeURIComponent(course)} />
         </div>
-    
-        );
+
+    );
 }

@@ -1,97 +1,11 @@
-'use client';
-
-import React, { useState, useRef, useEffect, useReducer } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import parseCSV from '../lib/processCSV';
-import parseTimeLineData from '../lib/processTimeLine';
-import styles from '../page.module.css';
 
-// const firstPassStart = timeLineData.firstPass?.FreshmenStart;
-// const firstPassEnd = '2023-07-16';
-
-// const secondPassStart = '2023-08-12';
-// const secondPassEnd = "2023-09-12";
-import * as cache from '../utils/frontend-cache';
-import TestComponent from './Test';
-
-function DetailedCourse({ course }) {
-    const [data, setData] = useState([]);
-    const decodeCourse = decodeURIComponent(course);
-    const [timeLineData, setTimeLineData] = useState({});
-    const [quarter, setQuarter] = useState('2023Fall');
-
-
-    const [visibleLines, setVisibleLines] = useState({
-        enrolledNumber: true,
-        waitlistNumber: true,
-        totalSeatNumber: true,
-    });
-
-    const [showFirstPass, setShowFirstPass] = useState(true);
-    const [showSecondPass, setShowSecondPass] = useState(true);
+export default function D3LineGraph({ data, timeLineData, visibleLines, showFirstPass, showSecondPass, decodeCourse }) {
 
     const svgRef = useRef();
     const legendRef = useRef();
     const tooltipRef = useRef();
-
-    // useEffect(() => {
-    //     // initialize the graph
-    //     async function loadGraph() {
-    //         const nodeCourse = await cache.getCourse(decodeURIComponent(course));
-    //         const rootNode = await makeGraph(nodeCourse);
-    //         // call treeReducer
-    //         dispatch({ type: "initialize", payload: rootNode });
-    //     }
-    //     loadGraph();
-    // }, [course]);
-
-    useEffect(() => {
-        if (course) {
-            fetchCourseAndProcess(course);
-        }
-    }, [course]);
-
-    useEffect(() => {
-        if (quarter) {
-            fetchTimeLineData(quarter);
-            console.log("timeLine DATA:: ", timeLineData);
-        }
-    }, [quarter]);
-
-    async function fetchCourseAndProcess(course) {
-        try {
-            const res = await fetch(`/api/fetchCSV?course=${course}`);
-            const csv = await res.text();
-            const formattedData = parseCSV(csv, course);
-            setData(formattedData);
-        } catch (error) {
-            console.error("Failed to fetch and parse CSV data:", error);
-        }
-    }
-
-    async function fetchTimeLineData(quarter) {
-        try {
-            const res = await fetch(`/api/fetchTimeLine?quarter=${quarter}`);
-            const data = await res.json();
-            const parsedData = parseTimeLineData(data);
-            console.log('Time Parsed Data (parsedData):', parsedData);
-            setTimeLineData(parsedData);
-        } catch (error) {
-            console.error("Failed to fetch time line data:", error);
-        }
-    }
-
-    useEffect(() => {
-        if (course) {
-            fetchCourseAndProcess(course);
-        }
-    }, [course, quarter]);
-
-    useEffect(() => {
-        if (quarter) {
-            fetchTimeLineData(quarter);
-        }
-    }, [quarter]);
 
     useEffect(() => {
         if (data.length > 0 && Object.keys(timeLineData).length > 0) {
@@ -100,9 +14,6 @@ function DetailedCourse({ course }) {
     }, [data, visibleLines, showFirstPass, showSecondPass, timeLineData]);
 
     const drawChart = () => {
-
-        // console.log("timeLineDATa in drawChart ", timeLineData);
-        // console.log("timeLineDATa.firstPass?.End in drawChart ", timeLineData.firstPass?.End);
 
         const svg = d3.select(svgRef.current)
             .attr('width', 700)
@@ -368,72 +279,12 @@ function DetailedCourse({ course }) {
         svg.call(zoom);
 
     };
-
-    const handleToggleLine = (key) => {
-        setVisibleLines(prevState => ({
-            ...prevState,
-            [key]: !prevState[key]
-        }));
-    };
-
-    const handleToggleFirstPass = () => {
-        setShowFirstPass(prev => !prev);
-    };
-
-    const handleToggleSecondPass = () => {
-        setShowSecondPass(prev => !prev);
-    };
-
     return (
         <div className="App" style={{ backgroundColor: 'white' }}>
-            <TestComponent />
-            <div className="dropdown">
-                <label className={styles.checkBtn}>
-                    <input
-                        type="checkbox"
-                        checked={visibleLines.enrolledNumber}
-                        onChange={() => handleToggleLine('enrolledNumber')}
-                    />
-                    Enrolled
-                </label>
-                <label className={styles.checkBtn}>
-                    <input
-                        type="checkbox"
-                        checked={visibleLines.waitlistNumber}
-                        onChange={() => handleToggleLine('waitlistNumber')}
-                    />
-                    Waitlisted
-                </label>
-                <label className={styles.checkBtn}>
-                    <input
-                        type="checkbox"
-                        checked={visibleLines.totalSeatNumber}
-                        onChange={() => handleToggleLine('totalSeatNumber')}
-                    />
-                    Total
-                </label>
-                <label className={styles.checkBtn}>
-                    <input
-                        type="checkbox"
-                        checked={showFirstPass}
-                        onChange={handleToggleFirstPass}
-                    />
-                    First Pass
-                </label>
-                <label className={styles.checkBtn}>
-                    <input
-                        type="checkbox"
-                        checked={showSecondPass}
-                        onChange={handleToggleSecondPass}
-                    />
-                    Second Pass
-                </label>
-            </div>
+
             <svg ref={svgRef} width={700} height={400}></svg>
             <svg ref={legendRef} className="legend"></svg>
             <div ref={tooltipRef} className="tooltip"></div>
         </div>
     );
 }
-
-export default DetailedCourse;

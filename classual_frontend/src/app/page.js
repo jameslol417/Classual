@@ -4,41 +4,22 @@ import styles from "./page.module.css";
 import MainSearch from "./components/MainSearch";
 import CoursesByMajor from "./components/CoursesByMajor";
 import { useState, useEffect } from 'react';
+import courseJson from '../../public/grouped_courses.json';
 
 export default function Home() {
   const [courses, setCourses] = useState({});
 
   useEffect(() => {
-    fetchCourses();
+    fetchCoursesJson();
   }, []);
 
-  async function fetchCourses() {
+  async function fetchCoursesJson() {
     try {
-      const res = await fetch('/api/fetchCourses');
-      const data = await res.text();
-      const parsedCourses = parseCourses(data);
-      setCourses(parsedCourses);
+      const data = courseJson;
+      setCourses(data);
     } catch (error) {
-      console.error("Failed to fetch courses:", error);
+      console.error("Failed to fetch json courses:", error.message);
     }
-  }
-
-  function parseCourses(text) {
-    const lines = text.split('\n');
-    const coursesByMajor = {};
-
-    lines.forEach((line) => {
-      const [major, ...courseDetails] = line.split(' ');
-      const course = line.trim();
-
-      if (!coursesByMajor[major]) {
-        coursesByMajor[major] = [];
-      }
-
-      coursesByMajor[major].push(course);
-    });
-
-    return coursesByMajor;
   }
 
   return (
