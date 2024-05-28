@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from "next/image";
 import styles from '../page.module.css';
-import DropDownIcon from '../../../public/DropDownIcon.png';
+import DropDownIcon from '../../../public/dropdownIcon.png'
 
 function CoursesByMajor({ courses }) {
     const [isOpen, setIsOpen] = useState({});
