@@ -1,11 +1,18 @@
 import s3 from '../../app/lib/s3';
 
 export default async function fetchCSV(req, res) {
-    const { course } = req.query;
-    console.log(`Fetching from S3: [4]2023Fall/overall/${course}.csv`);
+    const { course, quarter } = req.query;
+    console.log("Quarter!!!", quarter);
+
+
+    if (!course || !quarter) {
+        return res.status(400).send('Course and quarter are required.');
+    }
+
+    console.log(`Fetching from S3: ${quarter}/overall/${course}.csv`);
     const params = {
         Bucket: 'classual',
-        Key: `[4]2023Fall/overall/${course}.csv`
+        Key: `${quarter}/overall/${course}.csv`
     };
 
     try {

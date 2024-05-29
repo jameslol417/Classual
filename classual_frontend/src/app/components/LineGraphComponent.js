@@ -8,12 +8,12 @@ import D3LineGraph from './D3LineGraph';
 
 import * as cache from '../utils/frontend-cache';
 
-function LineGraphComponent({ course }) {
+function LineGraphComponent({ course, quarter }) {
     const [data, setData] = useState([]);
     const decodeCourse = decodeURIComponent(course);
     const [timeLineData, setTimeLineData] = useState({});
     const [isCourseCSVavailable, setIsCourseCSVavailable] = useState(true);
-    const [quarter, setQuarter] = useState('2023Fall');
+    // const [quarter, setQuarter] = useState('2023Fall');
 
     const [visibleLines, setVisibleLines] = useState({
         enrolledNumber: true,
@@ -27,9 +27,9 @@ function LineGraphComponent({ course }) {
 
     useEffect(() => {
         if (course) {
-            fetchCourseAndProcess(course);
+            fetchCourseAndProcess(course, quarter);
         }
-    }, [course]);
+    }, [course, quarter]);
 
     useEffect(() => {
         if (quarter) {
@@ -37,9 +37,9 @@ function LineGraphComponent({ course }) {
         }
     }, [quarter]);
 
-    async function fetchCourseAndProcess(course) {
+    async function fetchCourseAndProcess(course, quarter) {
         try {
-            const res = await fetch(`/api/fetchCSV?course=${course}`);
+            const res = await fetch(`/api/fetchCSV?course=${course}&quarter=${quarter}`);
             if (!res.ok) {
                 window.alert(`This course: ${decodeCourse}, is not Available at this quarter: ${quarter} `);
                 setIsCourseCSVavailable(false);
@@ -48,6 +48,7 @@ function LineGraphComponent({ course }) {
             const csv = await res.text();
             const formattedData = parseCSV(csv, course);
             setData(formattedData);
+            setIsCourseCSVavailable(true);
         } catch (error) {
             console.error("Failed to fetch or parse CSV data:", error);
         }
@@ -137,7 +138,7 @@ function LineGraphComponent({ course }) {
                         />
                     </div>
                 )
-                : <div>Sorry! Course not available</div>
+                : <div>{decodeCourse} was not offered during the quarter, {quarter} </div>
             }
         </div>
     );

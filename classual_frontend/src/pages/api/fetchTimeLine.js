@@ -4,10 +4,10 @@ import dirtyJSON from 'dirty-json';
 export default async function fetchTimeLine(req, res) {
     const { quarter } = req.query;
     console.log(`Quarter: ${quarter}`);
-    console.log(`Fetching from S3: [4]${quarter}/plotconfig.txt`)
+    console.log(`Fetching from S3: ${quarter}/plotconfig.txt`)
     const params = {
         Bucket: 'classual',
-        Key: `[4]${quarter}/plotconfig.txt`
+        Key: `${quarter}/plotconfig.txt`
     };
 
     try {
