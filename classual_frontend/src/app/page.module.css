@@ -11,6 +11,7 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem;
+  /* width: 70%; */
 }
 
 .titleTxt {
@@ -37,6 +38,7 @@
   width: 80%;
   font-size: 2rem;
   padding: 1rem;
+  background-color: transparent;
 }
 
 .searchButton {
@@ -137,4 +139,57 @@
   /* Revert back to original color on hover */
   transform: scale(1.05);
   /* Slightly larger on hover */
+}
+
+.Quarter {
+  position: absolute;
+  right: 8%;
+  top: 20%;
+  font-family: jua;
+}
+
+.course_number {
+  display: inline-block;
+  color: #87CEEB;
+  font-family: "jua";
+  font-size: 50px; 
+  font-weight: bold;  
+  -webkit-text-stroke: 1px black;
+  margin-left: 50px;
+}
+
+.course_name {
+  display: inline-block;
+  color: black;
+  font-family: "jua";
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 15px;
+}
+
+.description {
+  color: black;
+  margin: 10px 50px 20px 50px;
+  font-family: "raleway";
+}
+
+/* .logo {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+} */
+
+.backgroundImage {
+  position: absolute;
+  z-index: -1;
+}
+
+.BoyandGirl {
+    display: flex; 
+    flex-direction: row;
+
+}
+
+.spaceBetween {
+  margin: 1.5rem;
 }

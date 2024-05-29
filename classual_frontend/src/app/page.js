@@ -1,10 +1,13 @@
-'use client'
+"use client";
 
 import styles from "./page.module.css";
 import MainSearch from "./components/MainSearch";
 import CoursesByMajor from "./components/CoursesByMajor";
-import { useState, useEffect } from 'react';
-import courseJson from '../../public/grouped_courses.json';
+import { useState, useEffect } from "react";
+import courseJson from "../../public/grouped_courses.json";
+import mainLogo from "../../public/Logo.png";
+import Image from "next/image";
+
 
 export default function Home() {
   const [courses, setCourses] = useState({});
@@ -24,7 +27,10 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-
+      <div className={styles.logo}>
+        <Image src={mainLogo} alt="Classual Logo" width={400} height={100} />
+      </div>
+      
       <MainSearch courses={courses} />
       <CoursesByMajor courses={courses} />
     </main>
