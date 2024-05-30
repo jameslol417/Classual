@@ -2,8 +2,6 @@ import s3 from '../../app/lib/s3';
 
 export default async function fetchCSV(req, res) {
     const { course, quarter } = req.query;
-    console.log("Quarter!!!", quarter);
-
 
     if (!course || !quarter) {
         return res.status(400).send('Course and quarter are required.');

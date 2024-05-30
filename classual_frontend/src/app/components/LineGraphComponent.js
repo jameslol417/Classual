@@ -13,7 +13,6 @@ function LineGraphComponent({ course, quarter }) {
     const decodeCourse = decodeURIComponent(course);
     const [timeLineData, setTimeLineData] = useState({});
     const [isCourseCSVavailable, setIsCourseCSVavailable] = useState(true);
-    // const [quarter, setQuarter] = useState('2023Fall');
 
     const [visibleLines, setVisibleLines] = useState({
         enrolledNumber: true,
@@ -23,7 +22,6 @@ function LineGraphComponent({ course, quarter }) {
 
     const [showFirstPass, setShowFirstPass] = useState(true);
     const [showSecondPass, setShowSecondPass] = useState(true);
-    // TODO make the quarter be handled (drop down?) from the parent component [course]/page.js and pass it down here
 
     useEffect(() => {
         if (course) {
@@ -59,7 +57,6 @@ function LineGraphComponent({ course, quarter }) {
             const res = await fetch(`/api/fetchTimeLine?quarter=${quarter}`);
             const data = await res.json();
             const parsedData = parseTimeLineData(data);
-            console.log('Time Parsed Data (parsedData):', parsedData);
             setTimeLineData(parsedData);
         } catch (error) {
             console.error("Failed to fetch time line data:", error);

@@ -4,16 +4,58 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import LineGraphComponent from '../components/LineGraphComponent';
 import { IndependentGraphViewer } from "../components/GraphViewer";
+import courseDescriptionTSV from '../../../public/courses.tsv';
+import Papa from 'papaparse';
+import { decode } from 'punycode';
+
 
 export default function CoursePage() {
     const { course } = useParams();
     const [currentCourse, setCurrentCourse] = useState(course);
+    const decodeCourse = decodeURIComponent(course);
+    // Default selected Course is 2023 Fall
     const [selectedQuarter, setSelectedQuarter] = useState('[4]2023Fall');
+
+    const [courseData, setCourseData] = useState([]);
+    const [courseDetails, setCourseDetails] = useState(null);
+
+    useEffect(() => {
+        parseCourseDescriontion();
+    }, []);
+
+    async function parseCourseDescriontion() {
+        try {
+            const courseDescription = courseDescriptionTSV;
+            const jsonData = Papa.parse(courseDescription, {
+                header: true,
+                skipEmptyLines: true,
+                delimiter: '\t',
+            }).data;
+            setCourseData(jsonData);
+
+        } catch (error) {
+            console.error("Failed to fetch json courses:", error.message);
+        }
+    };
+
+    useEffect(() => {
+        if (courseData.length > 0) {
+            const details = findCourseDescription(decodeCourse);
+            setCourseDetails(details);
+        }
+    }, [decodeCourse, courseData]);
+
+    function findCourseDescription(courseCode) {
+        const course = courseData.find((course) => course.course_number === courseCode);
+        return course;
+
+    }
 
     useEffect(() => {
         if (course) {
             setCurrentCourse(course);
         }
+
     }, [course, selectedQuarter]);
 
     if (!currentCourse) {
@@ -26,6 +68,11 @@ export default function CoursePage() {
 
     return (
         <div>
+            <h1>Course_code: {decodeCourse}</h1>
+            <h2>course_name: {courseDetails?.course_name}</h2>
+            <h3>units: {courseDetails?.units}</h3>
+            <h3>Description: {courseDetails?.description}</h3>
+
             <div>
                 <label htmlFor="quarter-select">Select Quarter: </label>
                 <select id="quarter-select" value={selectedQuarter} onChange={handleQuarterChange}>
@@ -41,6 +88,5 @@ export default function CoursePage() {
             <LineGraphComponent course={currentCourse} quarter={selectedQuarter} />
             <IndependentGraphViewer courseCode={decodeURIComponent(course)} />
         </div>
-
     );
 }
