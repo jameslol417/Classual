@@ -24,21 +24,25 @@ function MainSearch({ courses }) {
 
   return (
     <div className={styles.topContainer}>
-
       <div className={styles.backgroundImage}>
         <Image src={Geisel} alt="Geisel Library" width={710} height={305} />
       </div>
 
-      <div className={styles.titleTxt}>UCSD Classual (Class + Visual)</div>
+      <div className={styles.titleTxt}>UCSD Classual</div>
 
       <div className={styles.BoyandGirl}>
-        <Image src={Boy} alt="Boy Image" width={50} height={50} />
+        
+        <div className={styles.boyGirlContainer}>
+          <Image src={Boy} alt="Boy Image" width={50} height={50} />
 
-        <div className={styles.spaceBetween}></div>
+          <div className={styles.spaceBetween}></div>
 
-        <Image src={Girl} alt="Girl Image" width={40} height={50} />
+          <Image src={Girl} alt="Girl Image" width={40} height={50} />
+        </div>
+        <div className={styles.emptyDiv}>
+
+        </div>
       </div>
-
 
       <div className={styles.searchContainer}>
         <div className={styles.searchInputContainer}>

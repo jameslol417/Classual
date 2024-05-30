@@ -8,6 +8,10 @@ import D3LineGraph from "./D3LineGraph";
 
 import * as cache from "../utils/frontend-cache";
 
+// Replace with Logo later
+import Image from "next/image";
+import Logo from "../../../public/Logo.png";
+
 function LineGraphComponent({ course }) {
   const [data, setData] = useState([]);
   const decodeCourse = decodeURIComponent(course);
@@ -84,6 +88,9 @@ function LineGraphComponent({ course }) {
 
   return (
     <div>
+      <div className = {styles.replaceLogo}>
+        <Image src={Logo} alt="logo" width={400} height={100} />
+      </div>
       <div className={styles.Quarter}>
         <label htmlFor="Quarter">Select Term: </label>
         <select name="Quarter" id="Quarter" className="selectQuarter">
@@ -97,7 +104,9 @@ function LineGraphComponent({ course }) {
       <div>
         <h1 className={styles.course_number}>DSC 140A</h1>
         <h2 className={styles.course_name}>Data Science (DS25)</h2>
-        <hr class="styled-hr" />
+        <div className={styles.shortenLine}>
+          <hr class="styled-hr" />
+        </div>
         <h3 className={styles.description}>
           The course covers learning and using probabilistic models for
           knowledge representation and decision-making. Topics covered include
@@ -106,7 +115,9 @@ function LineGraphComponent({ course }) {
           computational biology, and robotics. Prior completion of MATH 181A is
           strongly recommended.
         </h3>
-        <hr class="styled-hr" />
+        <div className = {styles.shortenLine2}>
+          <hr class="styled-hr" />
+        </div>
       </div>
 
       {isCourseCSVavailable ? (
