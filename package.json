@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "aws-sdk": "^2.1617.0"
+    "aws-sdk": "^2.1617.0",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "raw-loader": "^4.0.2"
   }
 }

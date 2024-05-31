@@ -8,6 +8,7 @@ import courseDescriptionTSV from "../../../public/courses.tsv";
 import Papa from "papaparse";
 import styles from "./page.module.css";
 import { jua } from "../fonts.js";
+// import { slugifyCourseCode } from "../utils";
 
 export default function CoursePage() {
   const { course } = useParams();
@@ -20,36 +21,24 @@ export default function CoursePage() {
   const [courseDetails, setCourseDetails] = useState(null);
 
   useEffect(() => {
-    parseCourseDescriontion();
+    parseCourseDescription();
   }, []);
 
-  async function parseCourseDescriontion() {
+
+  async function parseCourseDescription() {
     try {
-      const courseDescription = courseDescriptionTSV;
-      const jsonData = Papa.parse(courseDescription, {
-        header: true,
-        skipEmptyLines: true,
-        delimiter: "\t",
-      }).data;
+      const response = await fetch(`/courses/${decodeCourse.replace(/ /g, "_")}.json`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const jsonData = await response.json();
       setCourseData(jsonData);
+      console.log(jsonData.title);
     } catch (error) {
       console.error("Failed to fetch json courses:", error.message);
     }
   }
 
-  useEffect(() => {
-    if (courseData.length > 0) {
-      const details = findCourseDescription(decodeCourse);
-      setCourseDetails(details);
-    }
-  }, [decodeCourse, courseData]);
-
-  function findCourseDescription(courseCode) {
-    const course = courseData.find(
-      (course) => course.course_number === courseCode
-    );
-    return course;
-  }
 
   useEffect(() => {
     if (course) {
@@ -75,17 +64,14 @@ export default function CoursePage() {
         <div className={`${styles.courseCode} ${jua.className}`}>
           {decodeCourse}
         </div>
-        <div className={`${styles.course_name} ${jua.className}`}>
-          <span className={styles.boldness}>Course Name: </span>
-          {courseDetails?.course_name}
+        <div className={styles.course_name}>
+          Course Name: {courseData.title}
         </div>
         <div className={styles.h3}>
-          <span className={styles.boldness}>Units: </span>
-          {courseDetails?.units}
+          Units: {courseData.units}
         </div>
         <div className={styles.h3}>
-          <span className={styles.boldness}>Description:</span>
-          {courseDetails?.description}
+          Description: {courseData.description}
         </div>
 
         <div className={styles.horizontalLine}>
