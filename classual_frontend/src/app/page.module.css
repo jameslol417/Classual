@@ -42,7 +42,7 @@
 .searchInput {
   border: none;
   outline: none;
-  width: 80%;
+  width: 100%;
   font-size: 2rem;
   padding: 1rem;
   background-color: transparent;
@@ -200,14 +200,13 @@
   grid-template-columns: repeat(6, 1fr);
 }
 
-.shortenLine {
-  width: 93%;
-  margin: auto;
-}
-
-.shortenLine2 {
-  width: 93%;
-  margin: auto;
-}
-
 /* course description styling */
+.noCSV {
+  width: 700px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+}

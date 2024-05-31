@@ -45,9 +45,9 @@ function LineGraphComponent({ course, quarter }) {
         `/api/fetchCSV?course=${course}&quarter=${quarter}`
       );
       if (!res.ok) {
-        window.alert(
-          `This course: ${decodeCourse}, is not Available at this quarter: ${quarter} `
-        );
+        // window.alert(
+        //   `This course: ${decodeCourse}, is not Available at this quarter: ${quarter} `
+        // );
         setIsCourseCSVavailable(false);
         return;
       }
@@ -86,7 +86,7 @@ function LineGraphComponent({ course, quarter }) {
     setShowSecondPass(prev => !prev);
   }
 
-  
+
 
   return (
     <div>
@@ -144,7 +144,7 @@ function LineGraphComponent({ course, quarter }) {
           />
         </div>
       ) : (
-        <div>
+        <div className={styles.noCSV}>
           {decodeCourse} was not offered during the quarter, {quarter}{" "}
         </div>
       )}

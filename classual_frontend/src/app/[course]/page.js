@@ -73,16 +73,19 @@ export default function CoursePage() {
         </div>
 
         <div className={`${styles.courseCode} ${jua.className}`}>
-          Course Code: {decodeCourse}
+          {decodeCourse}
         </div>
-        <div className={styles.course_name}>
-          Course Name: {courseDetails?.course_name}
-        </div>
-        <div className={styles.h3}>
-          Units: {courseDetails?.units}
+        <div className={`${styles.course_name} ${jua.className}`}>
+          <span className={styles.boldness}>Course Name: </span>
+          {courseDetails?.course_name}
         </div>
         <div className={styles.h3}>
-          Description: {courseDetails?.description}
+          <span className={styles.boldness}>Units: </span>
+          {courseDetails?.units}
+        </div>
+        <div className={styles.h3}>
+          <span className={styles.boldness}>Description:</span>
+          {courseDetails?.description}
         </div>
 
         <div className={styles.horizontalLine}>
@@ -90,25 +93,31 @@ export default function CoursePage() {
 
       </div>
 
-
-      <div className={styles.Quarter}>
-        <label htmlFor="quarter-select">Select Quarter: </label>
-        <select
-          id="quarter-select"
-          value={selectedQuarter}
-          onChange={handleQuarterChange}
-        >
-          <option value="[0]2022Spring">2022 Spring</option>
-          <option value="[1]2022Fall">2022 Fall</option>
-          <option value="[2]2023Winter">2023 Winter</option>
-          <option value="[3]2023Spring">2023 Spring</option>
-          <option value="[4]2023Fall">2023 Fall</option>
-          <option value="[5]2024Winter">2024 Winter</option>
-        </select>
-      </div>
+      <DropDown selectedQuarter={selectedQuarter} handleQuarterChange={handleQuarterChange} />
 
       <LineGraphComponent course={currentCourse} quarter={selectedQuarter} />
       <IndependentGraphViewer courseCode={decodeURIComponent(course)} />
     </div>
   );
+}
+
+
+function DropDown({ selectedQuarter, handleQuarterChange }) {
+  return (
+    <div className={styles.dropDown}>
+      <label htmlFor="quarter-select" className={styles.boldness}>Select Quarter: </label>
+      <select
+        id="quarter-select"
+        value={selectedQuarter}
+        onChange={handleQuarterChange}
+      >
+        <option value="[0]2022Spring">2022 Spring</option>
+        <option value="[1]2022Fall">2022 Fall</option>
+        <option value="[2]2023Winter">2023 Winter</option>
+        <option value="[3]2023Spring">2023 Spring</option>
+        <option value="[4]2023Fall">2023 Fall</option>
+        <option value="[5]2024Winter">2024 Winter</option>
+      </select>
+    </div>
+  )
 }
