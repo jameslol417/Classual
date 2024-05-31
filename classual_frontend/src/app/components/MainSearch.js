@@ -10,6 +10,8 @@ import Geisel from "../../../public/Geisel.png";
 import Boy from "../../../public/Boy.png";
 import Girl from "../../../public/Girl.png";
 
+import { jua } from "../fonts.js";
+
 function MainSearch({ courses }) {
   const [searchTerm, setSerachTerm] = useState("");
   const allCourses = Object.values(courses).flat();
@@ -28,16 +30,16 @@ function MainSearch({ courses }) {
         <Image src={Geisel} alt="Geisel Library" width={710} height={305} />
       </div>
 
-      <div className={styles.titleTxt}>UCSD Classual</div>
+      <div className={`${jua.className} ${styles.titleTxt}`}>UCSD Classual</div>
 
       <div className={styles.BoyandGirl}>
-        
+
         <div className={styles.boyGirlContainer}>
-          <Image src={Boy} alt="Boy Image" width={50} height={50} />
+          <Image src={Boy} alt="Boy Image" width={40} height={70} />
 
           <div className={styles.spaceBetween}></div>
 
-          <Image src={Girl} alt="Girl Image" width={40} height={50} />
+          <Image src={Girl} alt="Girl Image" width={30} height={70} />
         </div>
         <div className={styles.emptyDiv}>
 

@@ -18,7 +18,7 @@
   font-size: 4rem;
   font-weight: 'bolder';
   color: #3F5B87;
-  text-align: center; 
+  text-align: center;
   font-family: "jua";
   text-shadow: 2px 2px 2px #fff;
   margin-top: 90px;
@@ -67,7 +67,7 @@
   font-weight: bolder;
   margin: 1rem;
   text-align: center;
-  
+
 }
 
 .majorAndClassContainer {
@@ -78,13 +78,13 @@
 
 .majorText {
   font-size: 2rem;
-  /* font-weight: bold; */
+  font-weight: bold;
   margin: 2rem;
-  text-decoration: underline;
+  /* text-decoration: underline; */
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-family: jua;
+  /* font-family: jua; */
 }
 
 .majorList {
@@ -168,8 +168,8 @@
   display: inline-block;
   color: #87CEEB;
   font-family: "jua";
-  font-size: 50px; 
-  font-weight: bold;  
+  font-size: 50px;
+  font-weight: bold;
   -webkit-text-stroke: 1px black;
   margin-left: 50px;
 }
@@ -201,9 +201,9 @@
 }
 
 .BoyandGirl {
-    display: flex; 
-    flex-direction: row;
-    margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  margin-top: 2rem;
 
 }
 

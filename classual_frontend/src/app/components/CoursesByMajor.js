@@ -6,6 +6,8 @@ import Image from "next/image";
 import styles from "../page.module.css";
 import DropDownIcon from "../../../public/dropdownIcon.png";
 
+import { jua } from "../fonts.js";
+
 
 function CoursesByMajor({ courses }) {
   const [isOpen, setIsOpen] = useState({});
@@ -39,7 +41,7 @@ function CoursesByMajor({ courses }) {
         {sortedCategories.map(({ letter, majors }) => (
           <div key={letter}>
             <div
-              className={styles.majorText}
+              className={`${styles.majorText} ${jua.className}`}
               onClick={() => toggleLetter(letter)}
             >
               {letter}
@@ -47,7 +49,7 @@ function CoursesByMajor({ courses }) {
             </div>
 
             {isOpen[letter] && (
-              <div className = {styles.majorList}>
+              <div className={styles.majorList}>
                 {majors.map(({ major, courseList }, index) => (
                   <div key={index}>
                     <h3 onClick={() => setIsOpen(prev => ({
