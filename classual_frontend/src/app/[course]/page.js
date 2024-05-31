@@ -6,8 +6,8 @@ import LineGraphComponent from "../components/LineGraphComponent";
 import { IndependentGraphViewer } from "../components/GraphViewer";
 import courseDescriptionTSV from "../../../public/courses.tsv";
 import Papa from "papaparse";
-import { decode } from "punycode";
 import styles from "./page.module.css";
+import { jua } from "../fonts.js";
 
 export default function CoursePage() {
   const { course } = useParams();
@@ -67,18 +67,29 @@ export default function CoursePage() {
 
   return (
     <div>
-      <div className={styles.shortenLine}>
-        <hr class="styled-hr" />
+
+      <div className={styles.columnFlex}>
+        <div className={styles.horizontalLine}>
+        </div>
+
+        <div className={`${styles.courseCode} ${jua.className}`}>
+          Course Code: {decodeCourse}
+        </div>
+        <div className={styles.course_name}>
+          Course Name: {courseDetails?.course_name}
+        </div>
+        <div className={styles.h3}>
+          Units: {courseDetails?.units}
+        </div>
+        <div className={styles.h3}>
+          Description: {courseDetails?.description}
+        </div>
+
+        <div className={styles.horizontalLine}>
+        </div>
+
       </div>
 
-      <div className = {styles.course_number}>Course Code: {decodeCourse}</div>
-      <div className={styles.course_name}>Course Name: {courseDetails?.course_name}</div>
-      <div>Units: {courseDetails?.units}</div>
-      <div className={styles.description}>Description: {courseDetails?.description}</div>
-
-      <div className={styles.shortenLine2}>
-        <hr class="styled-hr" />
-      </div>
 
       <div className={styles.Quarter}>
         <label htmlFor="quarter-select">Select Quarter: </label>

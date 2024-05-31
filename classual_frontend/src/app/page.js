@@ -23,9 +23,9 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <main className={styles.main}>
       <MainSearch courses={courses} />
       <CoursesByMajor courses={courses} />
-    </div>
+    </main>
   );
 }

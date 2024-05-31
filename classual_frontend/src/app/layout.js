@@ -16,10 +16,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Link className={styles.logo} href={"/"}>
-          <Image src={mainLogo} alt="Classual Logo" width={400} height={100} />
-        </Link>
-        <main className={styles.main}>{children}</main>
+        <header className={styles.header}>
+          <Link className={styles.logo} href={"/"}>
+            <Image src={mainLogo} alt="Classual Logo" width={400} height={100} />
+          </Link>
+        </header>
+        {children}
       </body>
     </html>
   );

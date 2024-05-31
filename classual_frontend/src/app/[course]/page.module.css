@@ -1,40 +1,60 @@
 .Quarter {
-right: 5%;
-top: 20%;
-font-family: "jua";
+    right: 5%;
+    top: 20%;
+    font-family: "jua";
+}
+
+.columnFlex {
+    display: flex;
+    flex-direction: column;
 }
 
 .course_number {
-display: inline-block;
-color: #87CEEB;
-font-family: "jua";
-font-size: 50px; 
-font-weight: bold;  
--webkit-text-stroke: 1px black;
-margin-left: 50px;
+    display: inline-block;
+    color: #87CEEB;
+    font-family: "jua";
+    font-size: 50px;
+    font-weight: bold;
+    -webkit-text-stroke: 1px black;
+    margin-left: 50px;
 }
 
 .course_name {
-display: inline-block;
-color: black;
-font-family: "jua";
-font-size: 20px;
-font-weight: bold;
-margin-left: 15px;
+    display: inline-block;
+    color: black;
+    font-family: "jua";
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 15px;
 }
 
-.shortenLine {
-width: 93%;
-margin: auto;
+.horizontalLine {
+    width: 93%;
+    /* margin: auto; */
+    border: 0.5px solid black;
+    margin: 0.5rem 0;
 }
 
-.shortenLine2 {
-width: 93%;
-margin: auto;
+.courseCode {
+    display: inline-block;
+    color: #87CEEB;
+    /* font-family: "jua"; */
+    font-size: 50px;
+    font-weight: bold;
+    -webkit-text-stroke: 1px black;
+    margin-left: 50px;
 }
 
-.description {
-color: black;
-margin: 25px 50px 25px 50px;
-font-family: "raleway";
+.course_name {
+    display: inline-block;
+    color: black;
+    font-family: "jua";
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+.h3 {
+    color: black;
+    margin: 1rem 1rem;
 }
