@@ -1,20 +1,34 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
-export default function D3LineGraph({ data, timeLineData, visibleLines, showFirstPass, showSecondPass, decodeCourse }) {
-
+export default function D3LineGraph({ data, timeLineData, visibleLines, decodeCourse }) {
     const svgRef = useRef();
     const legendRef = useRef();
     const tooltipRef = useRef();
+
+    const [checked, setChecked] = useState({
+        showFirstPass: false,
+        showSecondPass: false,
+        showPriorities: false,
+        showSeniors: false,
+        showJuniors: false,
+        showSophomores: false,
+        showFreshmen: false,
+        showTransfers: false,
+        showNewStudents: false,
+    });
 
     useEffect(() => {
         if (data.length > 0 && Object.keys(timeLineData).length > 0) {
             drawChart();
         }
-    }, [data, visibleLines, showFirstPass, showSecondPass, timeLineData]);
+    }, [data, visibleLines, checked, timeLineData]);
+
+    const handleCheckboxChange = (event) => {
+        setChecked({ ...checked, [event.target.name]: event.target.checked });
+    };
 
     const drawChart = () => {
-
         const svg = d3.select(svgRef.current)
             .attr('width', 700)
             .attr('height', 400)
@@ -29,25 +43,8 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, showFirs
         const parseTime = d3.timeParse('%Y-%m-%d');
         const dataExtent = d3.extent(data, d => parseTime(d.time));
 
-        // Include timeline dates in the xScale domain
-        const timelineDates = [
-            timeLineData.firstPass?.FreshmenStart,
-            timeLineData.firstPass?.End,
-            timeLineData.secondPass?.FreshmenStart,
-            timeLineData.secondPass?.End
-        ].filter(date => date).map(parseTime);
-
-
-        const combinedDates = [
-            ...data.map(d => parseTime(d.time)),
-            parseTime(timeLineData.firstPass?.FreshmenStart),
-            parseTime(timeLineData.firstPass?.End),
-            parseTime(timeLineData.secondPass?.FreshmenStart),
-            parseTime(timeLineData.secondPass?.End)
-        ].filter(date => date);
-
         const xScale = d3.scaleTime()
-            .domain(d3.extent(combinedDates))
+            .domain(dataExtent)
             .range([0, width]);
 
         const yScale = d3.scaleLinear()
@@ -60,55 +57,27 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, showFirs
             .y(d => yScale(d.value));
 
         const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-            .domain(['enrolledNumber', 'waitlistNumber', 'totalSeatNumber', 'FirstPass', 'Second Pass']);
+            .domain(['enrolledNumber', 'waitlistNumber', 'totalSeatNumber']);
 
         const nestedData = colorScale.domain().map(key => ({
             key,
-            values: data.map(d => {
-                const parsedTime = parseTime(d.time);
-                const value = +d[key];
-                if (isNaN(parsedTime) || isNaN(value)) {
-                    return null; // Return null for invalid entries
-                }
-                return { time: parsedTime, value: value };
-            }).filter(d => d !== null) // Filter out invalid entries
+            values: data.map(d => ({
+                time: parseTime(d.time),
+                value: +d[key]
+            }))
         }));
 
         const addShadedArea = (start, end, color, className) => {
-            console.log(`Original start: ${start}, Original end: ${end}`); // Log original dates
-
             const parsedStart = parseTime(start);
             const parsedEnd = parseTime(end);
-            if (!parsedStart || !parsedEnd) {
-                console.error(`Error parsing dates: ${start}, ${end}`);
-                return;
-            }
+            if (!parsedStart || !parsedEnd) return;
 
-            console.log(`Parsed start: ${parsedStart}, Parsed end: ${parsedEnd}`); // Log parsed dates
+            const xStart = xScale(parsedStart);
+            const xEnd = xScale(parsedEnd);
 
-            if (parsedStart >= parsedEnd) {
-                console.error(`Invalid date range: ${start} to ${end}`);
-                return;
-            }
-
-            const [minX, maxX] = xScale.domain();
-            const adjustedStart = d3.max([parsedStart, minX]);
-            const adjustedEnd = d3.min([parsedEnd, maxX]);
-
-            if (adjustedStart >= adjustedEnd) {
-                console.warn(`Adjusted date range out of bounds or invalid: ${adjustedStart} to ${adjustedEnd}`);
-                return;
-            }
-
-            console.log(`Adjusted start: ${adjustedStart}, Adjusted end: ${adjustedEnd}`); // Log adjusted dates
-
-            const xStart = xScale(adjustedStart);
-            const xEnd = xScale(adjustedEnd);
-
-            if (xStart < 0 || xEnd < 0) {
-                console.warn(`Negative positions calculated: xStart = ${xStart}, xEnd = ${xEnd}`);
-                return;
-            }
+            // if xStart goes over the axis, do not append
+            // console.log(margin.left);
+            // console.log(xStart);
 
             svg.append('rect')
                 .attr('x', xStart)
@@ -121,17 +90,53 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, showFirs
                 .attr('transform', `translate(${margin.left}, 0)`);
         };
 
-        // Adding shaded areas for first pass and second pass
-        if (showFirstPass && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
-            addShadedArea(timeLineData.firstPass.FreshmenStart, timeLineData.firstPass.End, 'pink');
+        if (checked.showFirstPass && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
+            addShadedArea(timeLineData.firstPass.FreshmenStart, timeLineData.firstPass.End, 'pink', 'shaded-area-first');
         }
 
-        if (showSecondPass && timeLineData.secondPass?.FreshmenStart && timeLineData.secondPass?.End) {
-            addShadedArea(timeLineData.secondPass.FreshmenStart, timeLineData.secondPass.End, 'skyblue');
+        if (checked.showSecondPass && timeLineData.secondPass?.FreshmenStart && timeLineData.secondPass?.End) {
+            addShadedArea(timeLineData.secondPass.FreshmenStart, timeLineData.secondPass.End, 'skyblue', 'shaded-area-second');
         }
+
+        // Additional shaded areas based on the checkbox state
+        if (checked.showPriorities && timeLineData.firstPass?.PrioritiesStart && timeLineData.firstPass?.End) {
+            addShadedArea(timeLineData.firstPass.PrioritiesStart, timeLineData.firstPass.End, '#e06d34', 'shaded-area-priorities');
+        }
+
+        if (checked.showSeniors && timeLineData.firstPass?.SeniorsStart && timeLineData.firstPass?.End) {
+            addShadedArea(timeLineData.firstPass.SeniorsStart, timeLineData.firstPass.End, '#42cf1b', 'shaded-area-seniors');
+        }
+
+        if (checked.showJuniors && timeLineData.firstPass?.JuniorsStart && timeLineData.firstPass?.End) {
+            addShadedArea(timeLineData.firstPass.JuniorsStart, timeLineData.firstPass.End, '#11c7d1', 'shaded-area-juniors');
+        }
+
+        if (checked.showSophomores && timeLineData.firstPass?.SophomoresStart && timeLineData.firstPass?.End) {
+            addShadedArea(timeLineData.firstPass.SophomoresStart, timeLineData.firstPass.End, '#6a26d1', 'shaded-area-sophomores');
+        }
+
+        if (checked.showFreshmen && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
+            addShadedArea(timeLineData.firstPass.FreshmenStart, timeLineData.firstPass.End, '#e0e342', 'shaded-area-freshmen');
+        }
+
+        if (checked.showTransfers && timeLineData.quarterStart?.NewTransfersStart && timeLineData.quarterStart?.End) {
+            addShadedArea(timeLineData.quarterStart.NewTransfersStart, timeLineData.quarterStart.End, '#e06d34', 'shaded-area-transfers');
+        }
+
+        if (checked.showNewStudents && timeLineData.quarterStart?.NewStudentsStart && timeLineData.quarterStart?.End) {
+            addShadedArea(timeLineData.quarterStart.NewStudentsStart, timeLineData.quarterStart.End, '#42cf1b', 'shaded-area-newstudents');
+        }
+
+        // Define clip path
+        svg.append("defs").append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("width", width)
+            .attr("height", height);
 
         const lineGroup = svg.append("g")
-            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+            .attr("transform", `translate(${margin.left}, ${margin.top})`)
+            .attr('clip-path', 'url(#clip)');
 
         lineGroup.selectAll(".line")
             .data(nestedData.filter(d => visibleLines[d.key]))
@@ -141,20 +146,13 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, showFirs
             .style("stroke", d => colorScale(d.key))
             .style("fill", "none");
 
-        // Define clip path
-        svg.append("defs").append("clipPath")
-            .attr("id", "clip")
-            .append("rect")
-            .attr("width", width)
-            .attr("height", height);
-
-        // X-axis with class for updating in zoom
+        // X-axis
         svg.append('g')
             .attr('class', 'x-axis')
             .attr('transform', `translate(${margin.left}, ${height + margin.top})`)
             .call(d3.axisBottom(xScale));
 
-        // Y-axis with class for updating in zoom
+        // Y-axis
         svg.append('g')
             .attr('class', 'y-axis')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
@@ -169,17 +167,8 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, showFirs
             .style('font-weight', 'bold')
             .text(decodeCourse);
 
-        // Source
-        svg.append('text')
-            .attr('x', width + margin.left)
-            .attr('y', height + margin.top + margin.bottom)
-            .attr('text-anchor', 'end')
-            .style('font-size', '10px')
-            .text('Date & Time');
-
         // Legend
         const legend = d3.select(legendRef.current);
-
         legend.selectAll('*').remove();
 
         const legendItems = legend.selectAll('.legend-item')
@@ -225,12 +214,10 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, showFirs
                 const a = d.values[index - 1];
                 const b = d.values[index];
 
-                if (!a || !b) {
-                    return { key: d.key, value: 'N/A' };
-                }
+                if (!a || !b) return { key: d.key, value: 'N/A' };
 
                 const closestData = x0 - a.time > b.time - x0 ? b : a;
-                return { key: d.key, value: closestData ? closestData.value : 'N/A' };
+                return { key: d.key, value: closestData.value };
             });
 
             tooltip.html(
@@ -253,38 +240,185 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, showFirs
                 const newXScale = event.transform.rescaleX(xScale);
                 const newYScale = event.transform.rescaleY(yScale);
 
-                // Update the axes
                 svg.select('.x-axis').call(d3.axisBottom(newXScale));
                 svg.select('.y-axis').call(d3.axisLeft(newYScale));
 
-                // Update the lines
                 lineGroup.selectAll(".line")
                     .attr("d", d => line.x(d => newXScale(d.time)).y(d => newYScale(d.value))(d.values));
 
                 // Update the shaded areas
-                if (showFirstPass) {
-                    svg.select('.shaded-area-first')
-                        .attr('x', newXScale(parseTime(timeLineData.firstPass?.FreshmenStart)))
-                        .attr('width', newXScale(parseTime(timeLineData.firstPass?.End)) - newXScale(parseTime(timeLineData.firstPass?.FreshmenStart)));
+                if (checked.showFirstPass && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
+                    const newX = newXScale(parseTime(timeLineData.firstPass.FreshmenStart));
+
+                    if (0 < newX) {
+                        svg.select('.shaded-area-first')
+                            .attr('x', newX)
+                            .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.FreshmenStart)))
+                            .attr('visibility', 'visible');
+                    } else {
+                        svg.select('.shaded-area-first')
+                            .attr('visibility', 'hidden');
+                    }
                 }
 
+                if (checked.showSecondPass && timeLineData.secondPass?.FreshmenStart && timeLineData.secondPass?.End) {
+                    const newX = newXScale(parseTime(timeLineData.secondPass.FreshmenStart));
 
-                if (showSecondPass) {
-                    svg.select('.shaded-area-second')
-                        .attr('x', newXScale(parseTime(timeLineData.secondPass?.FreshmenStart)))
-                        .attr('width', newXScale(parseTime(timeLineData.secondPass?.End)) - newXScale(parseTime(timeLineData.secondPass?.FreshmenStart)));
+                    if (0 < newX) {
+                        svg.select('.shaded-area-second')
+                            .attr('x', newXScale(parseTime(timeLineData.secondPass.FreshmenStart)))
+                            .attr('width', newXScale(parseTime(timeLineData.secondPass.End)) - newXScale(parseTime(timeLineData.secondPass.FreshmenStart)))
+                            .attr('visibility', 'visible');
+                    } else {
+                        svg.select('.shaded-area-second')
+                            .attr('visibility', 'hidden');
+                    }
+
+                }
+
+                if (checked.showPriorities && timeLineData.firstPass?.PrioritiesStart && timeLineData.firstPass?.End) {
+                    svg.select('.shaded-area-priorities')
+                        .attr('x', newXScale(parseTime(timeLineData.firstPass.PrioritiesStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.PrioritiesStart)));
+                }
+
+                if (checked.showSeniors && timeLineData.firstPass?.SeniorsStart && timeLineData.firstPass?.End) {
+                    svg.select('.shaded-area-seniors')
+                        .attr('x', newXScale(parseTime(timeLineData.firstPass.SeniorsStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.SeniorsStart)));
+                }
+
+                if (checked.showJuniors && timeLineData.firstPass?.JuniorsStart && timeLineData.firstPass?.End) {
+                    svg.select('.shaded-area-juniors')
+                        .attr('x', newXScale(parseTime(timeLineData.firstPass.JuniorsStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.JuniorsStart)));
+                }
+
+                if (checked.showSophomores && timeLineData.firstPass?.SophomoresStart && timeLineData.firstPass?.End) {
+                    svg.select('.shaded-area-sophomores')
+                        .attr('x', newXScale(parseTime(timeLineData.firstPass.SophomoresStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.SophomoresStart)));
+                }
+
+                if (checked.showFreshmen && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
+                    const newX = newXScale(parseTime(timeLineData.firstPass.FreshmenStart));
+                    if (0 < newX) {
+                        svg.select('.shaded-area-freshmen')
+                            .attr('x', newX)
+                            .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.FreshmenStart)))
+                            .attr('visibility', 'visible');
+                    } else {
+                        svg.select('.shaded-area-freshmen')
+                            .attr('visibility', 'hidden');
+                    }
+                }
+
+                if (checked.showTransfers && timeLineData.quarterStart?.NewTransfersStart && timeLineData.quarterStart?.End) {
+                    svg.select('.shaded-area-transfers')
+                        .attr('x', newXScale(parseTime(timeLineData.quarterStart.NewTransfersStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.quarterStart.End)) - newXScale(parseTime(timeLineData.quarterStart.NewTransfersStart)));
+                }
+
+                if (checked.showNewStudents && timeLineData.quarterStart?.NewStudentsStart && timeLineData.quarterStart?.End) {
+                    svg.select('.shaded-area-newstudents')
+                        .attr('x', newXScale(parseTime(timeLineData.quarterStart.NewStudentsStart)))
+                        .attr('width', newXScale(parseTime(timeLineData.quarterStart.End)) - newXScale(parseTime(timeLineData.quarterStart.NewStudentsStart)));
                 }
             });
 
         svg.call(zoom);
-
     };
-    return (
-        <div className="App" style={{ backgroundColor: 'white' }}>
 
-            <svg ref={svgRef} width={700} height={400}></svg>
-            <svg ref={legendRef} className="legend"></svg>
-            <div ref={tooltipRef} className="tooltip"></div>
+    return (
+        <div className="App" style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ flex: 1 }}>
+                <svg ref={svgRef} width={700} height={400}></svg>
+                <svg ref={legendRef} className="legend"></svg>
+                <div ref={tooltipRef} className="tooltip"></div>
+            </div>
+            <div className="checkboxes" style={{ marginLeft: '20px', display: 'flex', flexDirection: 'column' }}>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showFirstPass"
+                        checked={checked.showFirstPass}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show First Pass
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showSecondPass"
+                        checked={checked.showSecondPass}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show Second Pass
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showPriorities"
+                        checked={checked.showPriorities}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show Priorities
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showSeniors"
+                        checked={checked.showSeniors}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show Seniors
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showJuniors"
+                        checked={checked.showJuniors}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show Juniors
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showSophomores"
+                        checked={checked.showSophomores}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show Sophomores
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showFreshmen"
+                        checked={checked.showFreshmen}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show Freshmen
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showTransfers"
+                        checked={checked.showTransfers}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show Transfers
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="showNewStudents"
+                        checked={checked.showNewStudents}
+                        onChange={handleCheckboxChange}
+                        style={{ marginRight: '5px' }}
+                    /> Show New Students
+                </label>
+            </div>
         </div>
     );
 }
