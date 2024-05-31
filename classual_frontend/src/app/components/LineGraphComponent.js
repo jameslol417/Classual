@@ -5,7 +5,6 @@ import parseCSV from "../lib/processCSV";
 import parseTimeLineData from "../lib/processTimeLine";
 import styles from "../page.module.css";
 import D3LineGraph from "./D3LineGraph";
-import { Image } from "next/image";
 
 import * as cache from "../utils/frontend-cache";
 
@@ -78,6 +77,14 @@ function LineGraphComponent({ course, quarter }) {
       [key]: !prevState[key],
     }));
   };
+
+  const handleToggleFirstPass = () => {
+    setShowFirstPass(prev => !prev);
+  }
+
+  const handleToggleSecondPass = () => {
+    setShowSecondPass(prev => !prev);
+  }
 
   
 
