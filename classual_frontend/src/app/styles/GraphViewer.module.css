@@ -12,7 +12,7 @@
 }
 
 .courseNodeVertex {
-  /* fill: black; */
+  /* fill: #7beef8; */
   stroke:  #7beef8;
   stroke-width: 3px;
   cursor: pointer;
@@ -50,6 +50,7 @@
   padding: 2px 4px;
   cursor: pointer;
   fill: black;
+  background-color: rgb(203, 230, 240);
 }
 
 .courseNodeLabel.courseUnknown {
