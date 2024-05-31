@@ -9,6 +9,7 @@
   touch-action: none;
   overflow: auto;
   fill: rgb(203, 230, 240);
+  background-color: #f7f3f2;
 }
 
 .courseNodeVertex {
