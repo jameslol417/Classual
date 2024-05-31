@@ -70,11 +70,11 @@ export default function CoursePage() {
       <div className={styles.shortenLine}>
         <hr class="styled-hr" />
       </div>
-      
-      <h1>Course_code: {decodeCourse}</h1>
-      <h2>course_name: {courseDetails?.course_name}</h2>
-      <h3>units: {courseDetails?.units}</h3>
-      <h3>Description: {courseDetails?.description}</h3>
+
+      <div className = {styles.course_number}>Course Code: {decodeCourse}</div>
+      <div className={styles.course_name}>Course Name: {courseDetails?.course_name}</div>
+      <div>Units: {courseDetails?.units}</div>
+      <div className={styles.description}>Description: {courseDetails?.description}</div>
 
       <div className={styles.shortenLine2}>
         <hr class="styled-hr" />

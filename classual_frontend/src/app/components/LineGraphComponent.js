@@ -90,10 +90,6 @@ function LineGraphComponent({ course, quarter }) {
 
   return (
     <div>
-      <div className = {styles.replaceLogo}>
-        <Image src={Logo} alt="logo" width={400} height={100} />
-      </div>
-
       {isCourseCSVavailable ? (
         <div>
           <div className="dropdown">
