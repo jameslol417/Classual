@@ -5,7 +5,7 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, decodeCo
     const svgRef = useRef();
     const legendRef = useRef();
     const tooltipRef = useRef();
-    
+
     const [checked, setChecked] = useState({
         showFirstPass: false,
         showSecondPass: false,
@@ -74,6 +74,10 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, decodeCo
 
             const xStart = xScale(parsedStart);
             const xEnd = xScale(parsedEnd);
+
+            // if xStart goes over the axis, do not append
+            // console.log(margin.left);
+            // console.log(xStart);
 
             svg.append('rect')
                 .attr('x', xStart)
@@ -244,15 +248,32 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, decodeCo
 
                 // Update the shaded areas
                 if (checked.showFirstPass && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
-                    svg.select('.shaded-area-first')
-                        .attr('x', newXScale(parseTime(timeLineData.firstPass.FreshmenStart)))
-                        .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.FreshmenStart)));
+                    const newX = newXScale(parseTime(timeLineData.firstPass.FreshmenStart));
+
+                    if (0 < newX) {
+                        svg.select('.shaded-area-first')
+                            .attr('x', newX)
+                            .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.FreshmenStart)))
+                            .attr('visibility', 'visible');
+                    } else {
+                        svg.select('.shaded-area-first')
+                            .attr('visibility', 'hidden');
+                    }
                 }
 
                 if (checked.showSecondPass && timeLineData.secondPass?.FreshmenStart && timeLineData.secondPass?.End) {
-                    svg.select('.shaded-area-second')
-                        .attr('x', newXScale(parseTime(timeLineData.secondPass.FreshmenStart)))
-                        .attr('width', newXScale(parseTime(timeLineData.secondPass.End)) - newXScale(parseTime(timeLineData.secondPass.FreshmenStart)));
+                    const newX = newXScale(parseTime(timeLineData.secondPass.FreshmenStart));
+
+                    if (0 < newX) {
+                        svg.select('.shaded-area-second')
+                            .attr('x', newXScale(parseTime(timeLineData.secondPass.FreshmenStart)))
+                            .attr('width', newXScale(parseTime(timeLineData.secondPass.End)) - newXScale(parseTime(timeLineData.secondPass.FreshmenStart)))
+                            .attr('visibility', 'visible');
+                    } else {
+                        svg.select('.shaded-area-second')
+                            .attr('visibility', 'hidden');
+                    }
+
                 }
 
                 if (checked.showPriorities && timeLineData.firstPass?.PrioritiesStart && timeLineData.firstPass?.End) {
@@ -280,9 +301,16 @@ export default function D3LineGraph({ data, timeLineData, visibleLines, decodeCo
                 }
 
                 if (checked.showFreshmen && timeLineData.firstPass?.FreshmenStart && timeLineData.firstPass?.End) {
-                    svg.select('.shaded-area-freshmen')
-                        .attr('x', newXScale(parseTime(timeLineData.firstPass.FreshmenStart)))
-                        .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.FreshmenStart)));
+                    const newX = newXScale(parseTime(timeLineData.firstPass.FreshmenStart));
+                    if (0 < newX) {
+                        svg.select('.shaded-area-freshmen')
+                            .attr('x', newX)
+                            .attr('width', newXScale(parseTime(timeLineData.firstPass.End)) - newXScale(parseTime(timeLineData.firstPass.FreshmenStart)))
+                            .attr('visibility', 'visible');
+                    } else {
+                        svg.select('.shaded-area-freshmen')
+                            .attr('visibility', 'hidden');
+                    }
                 }
 
                 if (checked.showTransfers && timeLineData.quarterStart?.NewTransfersStart && timeLineData.quarterStart?.End) {
